@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Secret Code Explanation:
+         - The pop-up message and fireworks appear when all tasks are checked.
+         - If 'If no, skip this step' is checked, sub-tasks are disabled and counted.
+         - The reset button unchecks all tasks without refreshing the page.
+         - The dark mode button toggles the dark theme for the page.
+         - The design is responsive for different screen sizes.
+         COSMOS checklist made by Paulina PISTAC@danskebank.lt
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Progress Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            background: #fff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .header img {
+            position: absolute;
+            left: 20px;
+            width: 120px;
+        }
+        .dark-mode-toggle {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .task-list {
+            list-style: none;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            margin-top: 40px;
+            width: 50%;
+            max-width: 800px;
+            text-align: left;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .task-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 18px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .task-list label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .comment-box {
+            width: 100%;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #495057;
+            text-align: left;
+            white-space: pre-wrap;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .task-list input {
+            transform: scale(1.5);
+            margin-left: 10px;
+        }
+        .sub-tasks {
+            list-style: none;
+            margin-left: 20px;
+            padding-left: 20px;
+            border-left: 2px dashed #ccc;
+        }
+        .sub-tasks li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .reset-button {
+            margin-top: 20px;
+            padding: 20px 40px;
+            background: linear-gradient(90deg, #ff4b5c, #ff1e3c);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+            font-size: 20px;
+        }
+        .reset-button:hover {
+            background: linear-gradient(90deg, #ff1e3c, #d90429);
+        }
+        .footer {
+            margin-top: auto;
+            padding: 10px;
+            background: #fff;
+            box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            color: #555;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .well-done {
+            display: none;
+            font-size: 30px;
+            font-weight: bold;
+            color: #2ecc71;
+            margin-top: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .fireworks-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            display: none;
+        }
+        .fireworks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .header.dark-mode {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+        }
+        .task-list.dark-mode {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+        }
+        .task-list li.dark-mode {
+            background-color: #2c2c2c;
+        }
+        .comment-box.dark-mode {
+            background-color: #2c2c2c;
+            color: #e0e0e0;
+        }
+        .sub-tasks li.dark-mode {
+            background-color: #2c2c2c;
+        }
+        .footer.dark-mode {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+        }
+        .dark-mode-toggle.dark-mode {
+            background-color: transparent;
+            color: #e0e0e0;
+            border: 2px solid #e0e0e0;
+        }
+        .reset-button.dark-mode {
+            background: linear-gradient(90deg, #bb0a1e, #8b0000);
+        }
+        #well-done.dark-mode {
+            background-color: rgba(50, 50, 50, 0.9);
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="unnamed.png" alt="Danske Bank Logo">
+        COSMOS Checklist
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</button>
+    </div>
+    <div id="well-done" class="well-done">🎉 Well Done! 🎉</div>
+    <div class="fireworks-container" id="fireworks-container">
+        <canvas class="fireworks"></canvas>
+    </div>
+    <ul class="task-list" id="task-list">
+        <li>
+            <label>
+                <span>Before starting handling the case, check in ICE, does customer has „New in PWM“ trigger (If yes, contact EDJA).</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+        <li>
+            <label>
+                <span>Check if minor/elder has Managed accounts (3946).</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+        <li>
+            <label>
+                <span>Check KINDI in Portal, if it is NBV, check” Assets finance leasing” and based on analysis, mark CLM.</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+        <li>
+            <label>
+                <span>Do you have “Transactional” drop-off? (Example: Unclassified) If no, skip this step:</span>
+                <input type="checkbox" class="main-task" onchange="updateProgress()">
+            </label>
+        </li>
+        <ul class="sub-tasks">
+            <li>
+                <label>
+                    <span>Write SOF assessment in the case conclusion. If needed add the reason of deduction.</span>
+                    <input type="checkbox" class="task" onchange="updateProgress()">
+                </label>
+            </li>
+            <li>
+                <label>
+                    <span>If deductions were made, make sure to add SOF “Other” sentence (in the table below).</span>
+                    <input type="checkbox" class="task" onchange="updateProgress()">
+                </label>
+            </li>
+        </ul>
+        <li>
+            <label>
+                <span>Do you have cash drop-off? If no, skip this step:</span>
+                <input type="checkbox" class="main-task" onchange="updateProgress()">
+            </label>
+        </li>
+        <ul class="sub-tasks">
+            <li>
+                <label>
+                    <span>Check deviation of cash transfers (from 0 to something is still major deviation). If cash transfers have deviation 25% and more – ensure the major deviation sentence is used for all cash transfers.</span>
+                    <input type="checkbox" class="task" onchange="updateProgress()">
+                </label>
+            </li>
+            <li>
+                <label>
+                    <span>If deductions were made, make sure to update expected behavior (in the table below).</span>
+                    <input type="checkbox" class="task" onchange="updateProgress()">
+                </label>
+            </li>
+        </ul>
+        <li>
+            <label>
+                <span>Do you have foreign drop-off? If no, skip this step:</span>
+                <input type="checkbox" class="main-task" onchange="updateProgress()">
+            </label>
+        </li>
+        <ul class="sub-tasks">
+            <li>
+                <label>
+                    <span>Check deviation of incoming and outgoing foreign transfers (from 0 to something is still major deviation). If incoming or outgoing foreign transfers have deviation 25% and more – ensure the major deviation sentence is used for all foreign transfers.</span>
+                    <input type="checkbox" class="task" onchange="updateProgress()">
+                </label>
+            </li>
+            <li>
+                <label>
+                    <span>If deductions were made, make sure to update expected behavior (in the table below).</span>
+                    <input type="checkbox" class="task" onchange="updateProgress()">
+                </label>
+            </li>
+        </ul>
+        <li>
+            <label>
+                <span>Check accumulated AUM</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+        <div class="comment-box">
+            If below 5 MDKK – delete all old registrations from Source of Wealth table in Portal.
+            If above 5 MDKK – update with newest registration, explain how customer generated wealth? (NO NEED to separate AUM sum – leave as it is).
+            If above 75 MDKK – perform AMS.
+        </div>
+        <li>
+            <label>
+                <span>Check deposit securities (the review period is provided in TRUST for each customer). Comment on case conclusion, if there was any.</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+        <li>
+            <label>
+                <span>Check customer`s mandate holders (later – MH). If MH is in PWM, do CDD for them. Comment on case conclusion, if relation is not clear.</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+    </ul>
+    <button class="reset-button" onclick="resetTasks()">Reset</button>
+    <div class="footer">
+        If you encounter any errors or have a suggestion, reach me via Teams PSTAC<br>
+        Checklist updated on 2025.02.26<br>
+    </div>
+    <script>
+        // Function to update the progress of tasks
+        function updateProgress() {
+            let totalTasks = 0;
+            let completedTasks = 0;
+
+            // Count all standalone tasks
+            document.querySelectorAll('.task:not(.main-task)').forEach(task => {
+                if (!task.closest('.sub-tasks')) { // Ignore subtasks
+                    totalTasks++;
+                    if (task.checked) completedTasks++;
+                }
+            });
+
+            // Count and handle main tasks with sub-tasks
+            document.querySelectorAll('.main-task').forEach(mainTask => {
+                totalTasks++;
+                const subTasksContainer = mainTask.parentNode.nextElementSibling;
+                if (subTasksContainer && subTasksContainer.classList.contains('sub-tasks')) {
+                    const subTasks = subTasksContainer.querySelectorAll('.task');
+                    const anySubTaskChecked = [...subTasks].some(subTask => subTask.checked);
+                    if (mainTask.checked) {
+                        completedTasks++;
+                        subTasks.forEach(subTask => {
+                            subTask.disabled = true;
+                        });
+                    } else if (anySubTaskChecked) {
+                        subTasks.forEach(subTask => {
+                            subTask.disabled = false;
+                        });
+                        mainTask.disabled = true;
+                        mainTask.classList.add('disabled');
+                    } else {
+                        mainTask.disabled = false;
+                        mainTask.classList.remove('disabled');
+                    }
+                }
+            });
+
+            // Show "Well Done" message and fireworks when all tasks are complete
+            if (completedTasks === totalTasks && totalTasks > 0) {
+                showWellDone();
+            }
+        }
+
+        // Function to show the "Well Done" message and fireworks
+        function showWellDone() {
+            const message = document.getElementById('well-done');
+            const fireworksContainer = document.getElementById('fireworks-container');
+            message.style.display = 'block';
+            fireworksContainer.style.display = 'block';
+            startFireworks();
+            setTimeout(() => {
+                message.style.display = 'none';
+                fireworksContainer.style.display = 'none';
+            }, 4000);
+        }
+
+        // Function to reset all tasks
+        function resetTasks() {
+            document.querySelectorAll('.task, .main-task').forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.disabled = false;
+                checkbox.classList.remove('disabled');
+            });
+            updateProgress();
+        }
+
+        // Function to toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            document.querySelectorAll('.header, .task-list, .task-list li, .comment-box, .sub-tasks li, .footer, .dark-mode-toggle')
+                .forEach(el => el.classList.toggle('dark-mode'));
+        }
+
+        // Fireworks animation
+        function startFireworks() {
+            const canvas = document.querySelector('.fireworks');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#ff4b5c', '#ffcc00', '#2ecc71', '#3498db', '#9b59b6'];
+
+            function random(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            function createParticles(x, y) {
+                for (let i = 0; i < 30; i++) { // Number of particles per explosion
+                    particles.push(new Particle(x, y));
+                }
+            }
+
+            class Particle {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.speed = random(2, 6);
+                    this.angle = random(0, Math.PI * 2);
+                    this.radius = random(3, 6);
+                    this.color = colors[Math.floor(random(0, colors.length))];
+                    this.alpha = 1;
+                    this.decay = random(0.01, 0.03);
+                    this.velocityX = Math.cos(this.angle) * this.speed;
+                    this.velocityY = Math.sin(this.angle) * this.speed;
+                }
+
+                update() {
+                    this.x += this.velocityX;
+                    this.y += this.velocityY;
+                    this.alpha -= this.decay;
+                }
+
+                draw() {
+                    ctx.save();
+                    ctx.globalAlpha = this.alpha;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    particles[i].update();
+                    particles[i].draw();
+                    if (particles[i].alpha <= 0) {
+                        particles.splice(i, 1);
+                    }
+                }
+                if (particles.length > 0) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            // Trigger fireworks in the center of the screen
+            createParticles(canvas.width / 2, canvas.height / 2);
+            animate();
+        }
+    </script>
+</body>
+</html>
