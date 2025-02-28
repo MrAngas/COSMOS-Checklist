@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <!-- Secret Code Explanation:
-         - The pop-up message and fireworks appear when all tasks are checked.
          - If 'If no, skip this step' is checked, sub-tasks are disabled and counted.
          - The reset button unchecks all tasks without refreshing the page.
          - The dark mode button toggles the dark theme for the page.
@@ -12,6 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COSMOS Checklist</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,10 +43,14 @@
             left: 20px;
             width: 120px;
         }
-        .dark-mode-toggle {
+        .header-buttons {
             position: absolute;
             right: 20px;
             top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .header button {
             background: transparent;
             color: #007bff;
             border: 2px solid #007bff;
@@ -148,36 +152,34 @@
             text-align: center;
             transition: background-color 0.3s, color 0.3s;
         }
-        .well-done {
+        .dropdown {
             display: none;
-            font-size: 30px;
-            font-weight: bold;
-            color: #2ecc71;
-            margin-top: 20px;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        .fireworks-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 999;
-            display: none;
-        }
-        .fireworks {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            top: 60px;
+            right: 20px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: left;
+            z-index: 1000;
+        }
+        .dropdown ul {
+            list-style: none;
+            margin: 0;
+            padding: 10px;
+        }
+        .dropdown ul li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .dropdown ul li:last-child {
+            border-bottom: none;
+        }
+        .dropdown ul li span {
+            font-weight: bold;
+            margin-right: 10px;
         }
         body.dark-mode {
             background-color: #121212;
@@ -205,7 +207,7 @@
             background-color: #1f1f1f;
             color: #e0e0e0;
         }
-        .dark-mode-toggle.dark-mode {
+        .header button.dark-mode {
             background-color: transparent;
             color: #e0e0e0;
             border: 2px solid #e0e0e0;
@@ -213,21 +215,23 @@
         .reset-button.dark-mode {
             background: linear-gradient(90deg, #bb0a1e, #8b0000);
         }
-        #well-done.dark-mode {
-            background-color: rgba(50, 50, 50, 0.9);
-            color: #e0e0e0;
-        }
     </style>
 </head>
 <body>
     <div class="header">
         <img src="unnamed.png" alt="Danske Bank Logo">
         COSMOS Checklist
-        <button class="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</button>
+        <div class="header-buttons">
+            <button class="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</button>
+            <button class="change-log-toggle" onclick="toggleChangeLog()">Change Log</button>
+        </div>
     </div>
-    <div id="well-done" class="well-done">🎉 Well Done! 🎉</div>
-    <div class="fireworks-container" id="fireworks-container">
-        <canvas class="fireworks"></canvas>
+    <div class="dropdown" id="change-log">
+        <ul>
+            <li><span>2025-02-27:</span> Initial release of the COSMOS checklist.</li>
+            <li><span>2025-02-28:</span> Updates: Clicking "suggestion" opens mail app with recipient and subject, Added Change Log button, Fixed wording in "Transactional" drop-off step.</li>
+            <!-- Add more change log entries as needed -->
+        </ul>
     </div>
     <ul class="task-list" id="task-list">
         <li>
@@ -376,23 +380,6 @@
                 }
             });
 
-            // Show "Well Done" message and fireworks when all tasks are complete
-            if (completedTasks === totalTasks && totalTasks > 0) {
-                showWellDone();
-            }
-        }
-
-        // Function to show the "Well Done" message and fireworks
-        function showWellDone() {
-            const message = document.getElementById('well-done');
-            const fireworksContainer = document.getElementById('fireworks-container');
-            message.style.display = 'block';
-            fireworksContainer.style.display = 'block';
-            startFireworks();
-            setTimeout(() => {
-                message.style.display = 'none';
-                fireworksContainer.style.display = 'none';
-            }, 4000);
         }
 
         // Function to reset all tasks
@@ -412,74 +399,10 @@
                 .forEach(el => el.classList.toggle('dark-mode'));
         }
 
-        // Fireworks animation
-        function startFireworks() {
-            const canvas = document.querySelector('.fireworks');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const particles = [];
-            const colors = ['#ff4b5c', '#ffcc00', '#2ecc71', '#3498db', '#9b59b6'];
-
-            function random(min, max) {
-                return Math.random() * (max - min) + min;
-            }
-
-            function createParticles(x, y) {
-                for (let i = 0; i < 30; i++) { // Number of particles per explosion
-                    particles.push(new Particle(x, y));
-                }
-            }
-
-            class Particle {
-                constructor(x, y) {
-                    this.x = x;
-                    this.y = y;
-                    this.speed = random(2, 6);
-                    this.angle = random(0, Math.PI * 2);
-                    this.radius = random(3, 6);
-                    this.color = colors[Math.floor(random(0, colors.length))];
-                    this.alpha = 1;
-                    this.decay = random(0.01, 0.03);
-                    this.velocityX = Math.cos(this.angle) * this.speed;
-                    this.velocityY = Math.sin(this.angle) * this.speed;
-                }
-
-                update() {
-                    this.x += this.velocityX;
-                    this.y += this.velocityY;
-                    this.alpha -= this.decay;
-                }
-
-                draw() {
-                    ctx.save();
-                    ctx.globalAlpha = this.alpha;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                    ctx.restore();
-                }
-            }
-
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    particles[i].update();
-                    particles[i].draw();
-                    if (particles[i].alpha <= 0) {
-                        particles.splice(i, 1);
-                    }
-                }
-                if (particles.length > 0) {
-                    requestAnimationFrame(animate);
-                }
-            }
-
-            // Trigger fireworks in the center of the screen
-            createParticles(canvas.width / 2, canvas.height / 2);
-            animate();
+        // Function to toggle change log
+        function toggleChangeLog() {
+            const changeLog = document.getElementById('change-log');
+            changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
         }
     </script>
 </body>
