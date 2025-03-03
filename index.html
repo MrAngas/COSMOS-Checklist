@@ -230,6 +230,7 @@
         <ul>
             <li><span>2025-02-27:</span> Initial release of the COSMOS checklist.</li>
             <li><span>2025-02-28:</span> Updates: Clicking "suggestion" opens mail app with recipient and subject, Added Change Log button, Fixed wording in "Transactional" drop-off step.</li>
+            <li><span>2025-03-03:</span> Updates: Notes added on "Check KINDI in Portal" task.</li>
             <!-- Add more change log entries as needed -->
         </ul>
     </div>
@@ -248,10 +249,15 @@
         </li>
         <li>
             <label>
-                <span>Check KINDI in Portal, if it is NBV, check” Assets finance leasing” and based on analysis, mark CLM.</span>
+                <span>Check KINDI in Portal, if it is NBV:</span>
                 <input type="checkbox" class="task" onchange="updateProgress()">
             </label>
         </li>
+        <div class="comment-box">
+            Check” Assets finance leasing” and based on analysis, mark CLM;
+            Delete expected behaviour in KYC;
+            Insure role "`no business volume customer" is added.
+        </div>
         <li>
             <label>
                 <span>Do you have “Transactional” drop-off, which requires Trust? (Example: Unclassified) If no, skip this step:</span>
@@ -339,7 +345,7 @@
     <button class="reset-button" onclick="resetTasks()">Reset</button>
     <div class="footer">
         If you encounter any errors or have a <a href="mailto:PSTAC@danskebank.lt?subject=COSMOS%20Checklist%20suggestions">suggestion</a>, reach me via Teams PSTAC<br>
-        Checklist updated on 2025.02.28<br>
+        Checklist updated on 2025.03.03<br>
     </div>
     <script>
         // Function to update the progress of tasks
