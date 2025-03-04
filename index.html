@@ -8,6 +8,7 @@
          - The design is responsive for different screen sizes.
          - Clicking "suggestion" opens the mail app with recipient and subject pre-filled.
          - Change Log button toggles the visibility of the change log.
+         - Hyperlinks turn green in dark mode.
          COSMOS checklist made by Paulina PISTAC@danskebank.lt
     -->
     <meta charset="UTF-8">
@@ -222,6 +223,9 @@
             color: #e0e0e0;
             border-color: #333;
         }
+        .dark-mode a {
+            color: #556b2f; /* Green color for links in dark mode */
+        }
     </style>
 </head>
 <body>
@@ -238,7 +242,7 @@
             <li><span>2025-02-27:</span> Initial release of the COSMOS checklist.</li>
             <li><span>2025-02-28:</span> Updates: Clicking "suggestion" opens mail app with recipient and subject, Added Change Log button, Fixed wording in "Transactional" drop-off step.</li>
             <li><span>2025-03-03:</span> Updates: Notes added on "Check KINDI in Portal" task.</li>
-            <li><span>2025-03-04:</span> Updates: Added Hyperlinks that link to steps, that are related to 3946, AUM, Deposited securityes, Mandate holders "How-tos".</li>
+            <li><span>2025-03-04:</span> Updates: Added Hyperlinks that link to steps, that are related to 3946, AUM, Deposited securityes, Mandate holders "How-tos", also Change Log gets dark-mode.</li>
             <!-- Add more change log entries as needed -->
         </ul>
     </div>
