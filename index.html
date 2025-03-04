@@ -6,6 +6,8 @@
          - The reset button unchecks all tasks without refreshing the page.
          - The dark mode button toggles the dark theme for the page.
          - The design is responsive for different screen sizes.
+         - Clicking "suggestion" opens the mail app with recipient and subject pre-filled.
+         - Change Log button toggles the visibility of the change log.
          COSMOS checklist made by Paulina PISTAC@danskebank.lt
     -->
     <meta charset="UTF-8">
@@ -353,7 +355,7 @@
         function updateProgress() {
             let totalTasks = 0;
             let completedTasks = 0;
-
+    
             // Count all standalone tasks
             document.querySelectorAll('.task:not(.main-task)').forEach(task => {
                 if (!task.closest('.sub-tasks')) { // Ignore subtasks
@@ -361,7 +363,7 @@
                     if (task.checked) completedTasks++;
                 }
             });
-
+    
             // Count and handle main tasks with sub-tasks
             document.querySelectorAll('.main-task').forEach(mainTask => {
                 totalTasks++;
@@ -386,9 +388,9 @@
                     }
                 }
             });
-
+    
         }
-
+    
         // Function to reset all tasks
         function resetTasks() {
             document.querySelectorAll('.task, .main-task').forEach(checkbox => {
@@ -398,14 +400,14 @@
             });
             updateProgress();
         }
-
+    
         // Function to toggle dark mode
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
-            document.querySelectorAll('.header, .task-list, .task-list li, .comment-box, .sub-tasks li, .footer, .dark-mode-toggle')
+            document.querySelectorAll('.header, .task-list, .task-list li, .comment-box, .sub-tasks li, .footer, .dark-mode-toggle, .dropdown')
                 .forEach(el => el.classList.toggle('dark-mode'));
         }
-
+    
         // Function to toggle change log
         function toggleChangeLog() {
             const changeLog = document.getElementById('change-log');
