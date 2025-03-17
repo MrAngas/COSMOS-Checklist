@@ -9,6 +9,7 @@
          - Clicking "suggestion" opens the mail app with recipient and subject pre-filled.
          - Change Log button toggles the visibility of the change log.
          - Hyperlinks turn green in dark mode.
+         - Red Explanation mark appiers when there is recent features added to Change Log.
          COSMOS checklist made by Paulina PISTAC@danskebank.lt
     -->
     <meta charset="UTF-8">
@@ -62,6 +63,21 @@
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s, color 0.3s;
+        }
+        .exclamation-mark {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
         }
         .task-list {
             list-style: none;
@@ -234,7 +250,7 @@
         COSMOS Checklist
         <div class="header-buttons">
             <button class="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</button>
-            <button class="change-log-toggle" onclick="toggleChangeLog()">Change Log</button>
+            <button class="change-log-toggle" onclick="toggleChangeLog()">Change Log <span class="exclamation-mark" id="exclamation-mark">!</span></button>
         </div>
     </div>
     <div class="dropdown" id="change-log">
@@ -243,7 +259,7 @@
             <li><span>2025-02-28:</span> Updates: Clicking "suggestion" opens mail app with recipient and subject, Added Change Log button, Fixed wording in "Transactional" drop-off step.</li>
             <li><span>2025-03-03:</span> Updates: Notes added on "Check KINDI in Portal" task.</li>
             <li><span>2025-03-04:</span> Updates: Added Hyperlinks that link to steps, that are related to 3946, AUM, Deposited securityes, Mandate holders "How-tos", also Change Log gets dark-mode.</li>
-            <li><span>2025-03-17:</span> Updates: Added KINDI risk rating against customers own risk rating line with hiperlink.</li>
+            <li><span>2025-03-17:</span> Updates: Added KINDI risk rating against customers own risk rating line with hiperlink. Also added exclamation mark on Change Log button, when Checklist is updated a red explanation mark appiers.</li>
             <!-- Add more change log entries as needed -->
         </ul>
     </div>
@@ -424,6 +440,24 @@
             const changeLog = document.getElementById('change-log');
             changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
         }
+        document.addEventListener("DOMContentLoaded", function() {
+    const exclamationMark = document.getElementById('exclamation-mark');
+    if (localStorage.getItem('changeLogViewed') === 'true') {
+        exclamationMark.style.display = 'none';
+    } else {
+        exclamationMark.style.display = 'flex';
+    }
+});
+
+function toggleChangeLog() {
+    const changeLog = document.getElementById('change-log');
+    const exclamationMark = document.getElementById('exclamation-mark');
+    changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
+    if (changeLog.style.display === 'block') {
+        exclamationMark.style.display = 'none';
+        localStorage.setItem('changeLogViewed', 'true');
+    }
+}
     </script>
 </body>
 </html>
