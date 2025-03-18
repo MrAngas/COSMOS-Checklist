@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <!-- Secret Code Explanation:
-         - If 'If no, skip this step' is checked, sub-tasks are disabled and counted.
          - The reset button unchecks all tasks without refreshing the page.
          - The dark mode button toggles the dark theme for the page.
          - The design is responsive for different screen sizes.
@@ -10,6 +9,7 @@
          - Change Log button toggles the visibility of the change log.
          - Hyperlinks turn green in dark mode.
          - Red Explanation mark appiers when there is recent features added to Change Log.
+         - Clicking No hides not necessary sub-tasks.
          COSMOS checklist made by Paulina PISTAC@danskebank.lt
     -->
     <meta charset="UTF-8">
@@ -242,7 +242,33 @@
         .dark-mode a {
             color: #556b2f; /* Green color for links in dark mode */
         }
-    </style>
+        /* Style to hide elements by default */
+        .hidden {
+            display: none;
+        }
+
+        /* Additional styling for layout */
+        .aum-tasks {
+            margin-top: 10px;
+        }
+        .aum-tasks {
+            margin-top: 10px;
+        }
+        .radio-buttons {
+        display: flex;
+        align-items: center;
+        gap: 5px; /* Adjust this value as needed */
+        margin-left: 10px; /* Adjust margin as needed */
+        }
+        .radio-buttons label {
+        display: flex;
+        align-items: center;
+        margin-right: 5px; /* Adjust margin as needed */
+        }
+        .radio-buttons input[type="radio"] {
+        margin: 0 3px 0 0; /* Adjust this value as needed */
+        }
+	</style>
 </head>
 <body>
     <div class="header">
@@ -260,6 +286,7 @@
             <li><span>2025-03-03:</span> Updates: Notes added on "Check KINDI in Portal" task.</li>
             <li><span>2025-03-04:</span> Updates: Added Hyperlinks that link to steps, that are related to 3946, AUM, Deposited securityes, Mandate holders "How-tos", also Change Log gets dark-mode.</li>
             <li><span>2025-03-17:</span> Updates: Added KINDI risk rating against customers own risk rating line with hiperlink. Also added exclamation mark on Change Log button, when Checklist is updated a red explanation mark appiers.</li>
+            <li><span>2025-03-18:</span> Updates: Added Yes and No options for tasks that have mulltiple sub-tasks, added new sub-tasks for Is calculated AUM above 5MDKK. task.</li>
             <!-- Add more change log entries as needed -->
         </ul>
     </div>
@@ -289,76 +316,121 @@
             Check KINDI risk rating against customers own risk rating, if the KINDI risk rating is higher follow Domas <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EZkqfKFeo6hMtIBbvcFZ1vUBZfb0f3g5Uk7rE91nogGipQ?e=eOwApb" target="_blank">letter</a>.
         </div>
         <li>
-            <label>
-                <span>Do you have “Transactional” drop-off, which requires Trust? (Example: Unclassified) If no, skip this step:</span>
-                <input type="checkbox" class="main-task" onchange="updateProgress()">
-            </label>
-        </li>
-        <ul class="sub-tasks">
-            <li>
-                <label>
-                    <span>Write SOF assessment in the case conclusion. If needed add the reason of deduction.</span>
-                    <input type="checkbox" class="task" onchange="updateProgress()">
-                </label>
-            </li>
-            <li>
-                <label>
-                    <span>If deductions were made, make sure to add SOF “Other” sentence (in the table below).</span>
-                    <input type="checkbox" class="task" onchange="updateProgress()">
-                </label>
-            </li>
-        </ul>
+    <label style="display: flex; align-items: center;">
+        <span>Do you have “Transactional” drop-off, which requires Trust? (Example: Unclassified)</span>
+        <div class="radio-buttons">
+            <label><input type="radio" name="transactionalDropOff" value="yes" onclick="updateTransactionalDropOff()"> Yes</label>
+            <label><input type="radio" name="transactionalDropOff" value="no" onclick="updateTransactionalDropOff()"> No</label>
+        </div>
+    </label>
+</li>
+<ul class="sub-tasks hidden" id="transactionalDropOffTasks">
+    <li>
+        <label>
+            <span>Write SOF assessment in the case conclusion. If needed add the reason of deduction.</span>
+            <input type="checkbox" class="task" onchange="updateProgress()">
+        </label>
+    </li>
+    <li>
+        <label>
+            <span>If deductions were made, make sure to add SOF “Other” sentence (in the table below).</span>
+            <input type="checkbox" class="task" onchange="updateProgress()">
+        </label>
+    </li>
+</ul>
+        <li>
+    <label style="display: flex; align-items: center;">
+        <span>Do you have cash drop-off?</span>
+        <div class="radio-buttons">
+            <label><input type="radio" name="cashDropOff" value="yes" onclick="updateCashDropOff()"> Yes</label>
+            <label><input type="radio" name="cashDropOff" value="no" onclick="updateCashDropOff()"> No</label>
+        </div>
+    </label>
+</li>
+<ul class="sub-tasks hidden" id="cashDropOffTasks">
+    <li>
+        <label>
+            <span>Check deviation of cash transfers (from 0 to something is still major deviation). If cash transfers have deviation 25% and more – ensure the major deviation sentence is used for all cash transfers.</span>
+            <input type="checkbox" class="task" onchange="updateProgress()">
+        </label>
+    </li>
+    <li>
+        <label>
+            <span>If deductions were made, make sure to update expected behavior (in the table below).</span>
+            <input type="checkbox" class="task" onchange="updateProgress()">
+        </label>
+    </li>
+</ul>
+        <li>
+    <label style="display: flex; align-items: center;">
+        <span>Do you have foreign drop-off?</span>
+        <div class="radio-buttons">
+            <label><input type="radio" name="foreignDropOff" value="yes" onclick="updateForeignDropOff()"> Yes</label>
+            <label><input type="radio" name="foreignDropOff" value="no" onclick="updateForeignDropOff()"> No</label>
+        </div>
+    </label>
+</li>
+        <ul class="sub-tasks hidden" id="foreignDropOffTasks">
+    <li>
+        <label>
+            <span>Check deviation of incoming and outgoing foreign transfers (from 0 to something is still major deviation). If incoming or outgoing foreign transfers have deviation 25% and more – ensure the major deviation sentence is used for all foreign transfers.</span>
+            <input type="checkbox" class="task" onchange="updateProgress()">
+        </label>
+    </li>
+    <li>
+        <label>
+            <span>If deductions were made, make sure to update expected behavior (in the table below).</span>
+            <input type="checkbox" class="task" onchange="updateProgress()">
+        </label>
+    </li>
+</ul>
+        <li>
+    <label style="display: flex; align-items: center;">
+        <span>Is calculated <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EcRYZXgE6ZhJhCXeuycnOZMBLns5loLjQvbH5xU4NphaAw?e=fjVwQB" target="_blank">AUM</a> above 5MDKK.</span>
+        <div class="radio-buttons">
+            <label><input type="radio" name="aum" value="yes" onclick="updateAUM()"> Yes</label>
+            <label><input type="radio" name="aum" value="no" onclick="updateAUM()"> No</label>
+        </div>
+    </label>
+</li>
+<div class="aum-tasks hidden">
+    <ul>
         <li>
             <label>
-                <span>Do you have cash drop-off? If no, skip this step:</span>
-                <input type="checkbox" class="main-task" onchange="updateProgress()">
-            </label>
-        </li>
-        <ul class="sub-tasks">
-            <li>
-                <label>
-                    <span>Check deviation of cash transfers (from 0 to something is still major deviation). If cash transfers have deviation 25% and more – ensure the major deviation sentence is used for all cash transfers.</span>
-                    <input type="checkbox" class="task" onchange="updateProgress()">
-                </label>
-            </li>
-            <li>
-                <label>
-                    <span>If deductions were made, make sure to update expected behavior (in the table below).</span>
-                    <input type="checkbox" class="task" onchange="updateProgress()">
-                </label>
-            </li>
-        </ul>
-        <li>
-            <label>
-                <span>Do you have foreign drop-off? If no, skip this step:</span>
-                <input type="checkbox" class="main-task" onchange="updateProgress()">
-            </label>
-        </li>
-        <ul class="sub-tasks">
-            <li>
-                <label>
-                    <span>Check deviation of incoming and outgoing foreign transfers (from 0 to something is still major deviation). If incoming or outgoing foreign transfers have deviation 25% and more – ensure the major deviation sentence is used for all foreign transfers.</span>
-                    <input type="checkbox" class="task" onchange="updateProgress()">
-                </label>
-            </li>
-            <li>
-                <label>
-                    <span>If deductions were made, make sure to update expected behavior (in the table below).</span>
-                    <input type="checkbox" class="task" onchange="updateProgress()">
-                </label>
-            </li>
-        </ul>
-        <li>
-            <label>
-                <span>Check accumulated <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EcRYZXgE6ZhJhCXeuycnOZMBLns5loLjQvbH5xU4NphaAw?e=fjVwQB" target="_blank">AUM</a></span>
+                <span>Leave newly calculated AUM as it is</span>
                 <input type="checkbox" class="task" onchange="updateProgress()">
             </label>
         </li>
-        <div class="comment-box">
-            If below 5 MDKK – delete all old registrations from Source of Wealth table in Portal.
-            If above 5 MDKK – update with newest registration, explain how customer generated wealth? (NO NEED to separate AUM sum – leave as it is).
-            If above 75 MDKK – perform AMS.
-        </div>
+        <li>
+            <label>
+                <span>Check customer`s pensions (PensionInfo doc., Wealth Planner, Portal)</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+        <li>
+            <label>
+                <span>Check customer`s real estate (Portal, Wealth Planner, BiQ, Annual tax assessment, capital statement)</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+        <li>
+            <label>
+                <span>Check customer`s owned companies (Portal, BiQ, Wealth Planner)</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+        <li>
+            <label>
+                <span>If customer`s AUM is above 75 MDKK, perform AMS.</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+    </ul>
+</div>
+<div class="aum-comment hidden comment-box">
+    Leave newly calculated AUM as it is;
+    Delete all old registrations from Source of Wealth table in Portal.
+</div>
         <li>
             <label>
                 <span>Check <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EYTol5Z34i1Fgdo-nlMolGQB4deNhHG1WTv2mBPZBVdXyw?e=XDlIgI" target="_blank">deposit securities</a> (the review period is provided in TRUST for each customer). Comment on case conclusion, if there was any.</span>
@@ -374,8 +446,8 @@
     </ul>
     <button class="reset-button" onclick="resetTasks()">Reset</button>
     <div class="footer">
-        If you encounter any errors or have a <a href="mailto:PSTAC@danskebank.lt?subject=COSMOS%20Checklist%20suggestions">suggestion</a>, reach me via Teams PSTAC<br>
-        Checklist updated on 2025.03.17<br>
+        If you encounter any errors or have a <a href="mailto:PSTAC@danskebank.lt?subject=COSMOS%20Checklist%20suggestions">suggestion</a>,reach me via Teams PSTAC<br>
+        Checklist updated on 2025.03.18<br>
     </div>
     <script>
         // Function to update the progress of tasks
@@ -420,13 +492,24 @@
     
         // Function to reset all tasks
         function resetTasks() {
-            document.querySelectorAll('.task, .main-task').forEach(checkbox => {
-                checkbox.checked = false;
-                checkbox.disabled = false;
-                checkbox.classList.remove('disabled');
-            });
-            updateProgress();
-        }
+    document.querySelectorAll('.task, .main-task').forEach(checkbox => {
+        checkbox.checked = false;
+        checkbox.disabled = false;
+        checkbox.classList.remove('disabled');
+    });
+
+    // Reset radio buttons (set to no selection)
+    document.querySelectorAll('input[name="aum"], input[name="foreignDropOff"], input[name="transactionalDropOff"], input[name="cashDropOff"]').forEach(radio => {
+        radio.checked = false;   // Uncheck all radio buttons
+    });
+
+    // Hide the related tasks and comments
+    document.querySelectorAll('.aum-tasks, .aum-comment, #foreignDropOffTasks, #transactionalDropOffTasks, #cashDropOffTasks').forEach(section => {
+        section.classList.add('hidden');   // Hide the section
+    });
+
+    updateProgress();
+}
     
         // Function to toggle dark mode
         function toggleDarkMode() {
@@ -456,6 +539,77 @@ function toggleChangeLog() {
     if (changeLog.style.display === 'block') {
         exclamationMark.style.display = 'none';
         localStorage.setItem('changeLogViewed', 'true');
+    }
+}
+// Function to update the progress of tasks
+        function updateProgress() {
+            let totalTasks = 0;
+            let completedTasks = 0;
+            // You can add your logic here to calculate the progress of tasks if needed
+        }
+
+        // Function to show/hide tasks and comments based on AUM selection
+        function updateAUM() {
+            console.log("updateAUM function triggered"); // Debugging log
+
+            // Get references to the Yes/No radio buttons and the task elements
+            const aumYes = document.querySelector('input[name="aum"][value="yes"]');
+            const aumNo = document.querySelector('input[name="aum"][value="no"]');
+            const aumTasks = document.querySelector('.aum-tasks');
+            const aumComment = document.querySelector('.aum-comment');
+
+            console.log("aumYes checked:", aumYes.checked, "aumNo checked:", aumNo.checked); // Debugging log
+
+            // Hide both sections initially
+            aumTasks.classList.add('hidden');
+            aumComment.classList.add('hidden');
+
+            // Show or hide sub-tasks and comment based on the radio button selection
+            if (aumYes.checked) {
+                aumTasks.classList.remove('hidden');  // Show sub-tasks if Yes is selected
+            } else if (aumNo.checked) {
+                aumComment.classList.remove('hidden');  // Show comment section if No is selected
+            }
+        }
+
+        // Ensure that the tasks are hidden on page load if no option is selected
+        window.addEventListener('DOMContentLoaded', function() {
+            updateAUM();
+        });
+        // Function to update the visibility of foreign drop-off tasks
+function updateForeignDropOff() {
+    const foreignDropOffYes = document.querySelector('input[name="foreignDropOff"][value="yes"]');
+    const foreignDropOffNo = document.querySelector('input[name="foreignDropOff"][value="no"]');
+    const foreignDropOffTasks = document.getElementById('foreignDropOffTasks');
+
+    if (foreignDropOffYes.checked) {
+        foreignDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
+    } else if (foreignDropOffNo.checked) {
+        foreignDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
+    }
+}
+// Function to update the visibility of transactional drop-off tasks
+function updateTransactionalDropOff() {
+    const transactionalDropOffYes = document.querySelector('input[name="transactionalDropOff"][value="yes"]');
+    const transactionalDropOffNo = document.querySelector('input[name="transactionalDropOff"][value="no"]');
+    const transactionalDropOffTasks = document.getElementById('transactionalDropOffTasks');
+
+    if (transactionalDropOffYes.checked) {
+        transactionalDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
+    } else if (transactionalDropOffNo.checked) {
+        transactionalDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
+    }
+}
+// Function to update the visibility of cash drop-off tasks
+function updateCashDropOff() {
+    const cashDropOffYes = document.querySelector('input[name="cashDropOff"][value="yes"]');
+    const cashDropOffNo = document.querySelector('input[name="cashDropOff"][value="no"]');
+    const cashDropOffTasks = document.getElementById('cashDropOffTasks');
+
+    if (cashDropOffYes.checked) {
+        cashDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
+    } else if (cashDropOffNo.checked) {
+        cashDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
     }
 }
     </script>
