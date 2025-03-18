@@ -523,9 +523,14 @@
             const changeLog = document.getElementById('change-log');
             changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
         }
-        document.addEventListener("DOMContentLoaded", function() {
+        ddocument.addEventListener("DOMContentLoaded", function() {
     const exclamationMark = document.getElementById('exclamation-mark');
-    if (localStorage.getItem('changeLogViewed') === 'true') {
+
+    // Extract the last update date from the change log
+    const changeLogEntries = document.querySelectorAll("#change-log ul li span");
+    const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
+
+    if (localStorage.getItem('changeLogViewedDate') === lastUpdateDate) {
         exclamationMark.style.display = 'none';
     } else {
         exclamationMark.style.display = 'flex';
@@ -535,10 +540,15 @@
 function toggleChangeLog() {
     const changeLog = document.getElementById('change-log');
     const exclamationMark = document.getElementById('exclamation-mark');
+
+    // Extract the last update date from the change log
+    const changeLogEntries = document.querySelectorAll("#change-log ul li span");
+    const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
+
     changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
     if (changeLog.style.display === 'block') {
         exclamationMark.style.display = 'none';
-        localStorage.setItem('changeLogViewed', 'true');
+        localStorage.setItem('changeLogViewedDate', lastUpdateDate);
     }
 }
 // Function to update the progress of tasks
