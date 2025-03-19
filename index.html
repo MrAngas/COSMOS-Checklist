@@ -478,28 +478,27 @@
             });
     
         }
-    </script>
-    <script>
+    
         // Function to reset all tasks
         function resetTasks() {
-            document.querySelectorAll('.task, .main-task').forEach(checkbox => {
-                checkbox.checked = false;
-                checkbox.disabled = false;
-                checkbox.classList.remove('disabled');
-            });
-    
-            // Reset radio buttons (set to no selection)
-            document.querySelectorAll('input[name="aum"], input[name="foreignDropOff"], input[name="transactionalDropOff"], input[name="cashDropOff"]').forEach(radio => {
-                radio.checked = false;   // Uncheck all radio buttons
-            });
-    
-            // Hide the related tasks and comments
-            document.querySelectorAll('.aum-tasks, .aum-comment, #foreignDropOffTasks, #transactionalDropOffTasks, #cashDropOffTasks').forEach(section => {
-                section.classList.add('hidden');   // Hide the section
-            });
-    
-            updateProgress();
-        }
+    document.querySelectorAll('.task, .main-task').forEach(checkbox => {
+        checkbox.checked = false;
+        checkbox.disabled = false;
+        checkbox.classList.remove('disabled');
+    });
+
+    // Reset radio buttons (set to no selection)
+    document.querySelectorAll('input[name="aum"], input[name="foreignDropOff"], input[name="transactionalDropOff"], input[name="cashDropOff"]').forEach(radio => {
+        radio.checked = false;   // Uncheck all radio buttons
+    });
+
+    // Hide the related tasks and comments
+    document.querySelectorAll('.aum-tasks, .aum-comment, #foreignDropOffTasks, #transactionalDropOffTasks, #cashDropOffTasks').forEach(section => {
+        section.classList.add('hidden');   // Hide the section
+    });
+
+    updateProgress();
+}
     
         // Function to toggle dark mode
         function toggleDarkMode() {
@@ -513,112 +512,105 @@
             const changeLog = document.getElementById('change-log');
             changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
         }
-        document.addEventListener("DOMContentLoaded", function() {
-            const exclamationMark = document.getElementById('exclamation-mark');
-            document.addEventListener("DOMContentLoaded", function() { // <- This is where the error is
-                const exclamationMark = document.getElementById('exclamation-mark');
-    
-                // Extract the last update date from the change log
-                const changeLogEntries = document.querySelectorAll("#change-log ul li span");
-                const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
-    
-                if (localStorage.getItem('changeLogViewedDate') === lastUpdateDate) {
-                    exclamationMark.style.display = 'none';
-                } else {
-                    exclamationMark.style.display = 'flex';
-                }
-    
-            });
-            function toggleChangeLog() {
-                const changeLog = document.getElementById('change-log');
-                const exclamationMark = document.getElementById('exclamation-mark');
-    
-                // Extract the last update date from the change log
-                const changeLogEntries = document.querySelectorAll("#change-log ul li span");
-                const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
-    
-                changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
-                if (changeLog.style.display === 'block') {
-                    exclamationMark.style.display = 'none';
-                    localStorage.setItem('changeLogViewedDate', lastUpdateDate);
-                }
+        ddocument.addEventListener("DOMContentLoaded", function() {
+    const exclamationMark = document.getElementById('exclamation-mark');
+
+    // Extract the last update date from the change log
+    const changeLogEntries = document.querySelectorAll("#change-log ul li span");
+    const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
+
+    if (localStorage.getItem('changeLogViewedDate') === lastUpdateDate) {
+        exclamationMark.style.display = 'none';
+    } else {
+        exclamationMark.style.display = 'flex';
+    }
+});
+
+function toggleChangeLog() {
+    const changeLog = document.getElementById('change-log');
+    const exclamationMark = document.getElementById('exclamation-mark');
+
+    // Extract the last update date from the change log
+    const changeLogEntries = document.querySelectorAll("#change-log ul li span");
+    const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
+
+    changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
+    if (changeLog.style.display === 'block') {
+        exclamationMark.style.display = 'none';
+        localStorage.setItem('changeLogViewedDate', lastUpdateDate);
+    }
+}
+// Function to update the progress of tasks
+        function updateProgress() {
+            let totalTasks = 0;
+            let completedTasks = 0;
+            // You can add your logic here to calculate the progress of tasks if needed
+        }
+
+        // Function to show/hide tasks and comments based on AUM selection
+        function updateAUM() {
+            console.log("updateAUM function triggered"); // Debugging log
+
+            // Get references to the Yes/No radio buttons and the task elements
+            const aumYes = document.querySelector('input[name="aum"][value="yes"]');
+            const aumNo = document.querySelector('input[name="aum"][value="no"]');
+            const aumTasks = document.querySelector('.aum-tasks');
+            const aumComment = document.querySelector('.aum-comment');
+
+            console.log("aumYes checked:", aumYes.checked, "aumNo checked:", aumNo.checked); // Debugging log
+
+            // Hide both sections initially
+            aumTasks.classList.add('hidden');
+            aumComment.classList.add('hidden');
+
+            // Show or hide sub-tasks and comment based on the radio button selection
+            if (aumYes.checked) {
+                aumTasks.classList.remove('hidden');  // Show sub-tasks if Yes is selected
+            } else if (aumNo.checked) {
+                aumComment.classList.remove('hidden');  // Show comment section if No is selected
             }
-    
-            // Function to update the progress of tasks
-            function updateProgress() {
-                let totalTasks = 0;
-                let completedTasks = 0;
-                // You can add your logic here to calculate the progress of tasks if needed
-            }
-    
-            // Function to show/hide tasks and comments based on AUM selection
-            function updateAUM() {
-                console.log("updateAUM function triggered"); // Debugging log
-    
-                // Get references to the Yes/No radio buttons and the task elements
-                const aumYes = document.querySelector('input[name="aum"][value="yes"]');
-                const aumNo = document.querySelector('input[name="aum"][value="no"]');
-                const aumTasks = document.querySelector('.aum-tasks');
-                const aumComment = document.querySelector('.aum-comment');
-    
-                console.log("aumYes checked:", aumYes.checked, "aumNo checked:", aumNo.checked); // Debugging log
-    
-                // Hide both sections initially
-                aumTasks.classList.add('hidden');
-                aumComment.classList.add('hidden');
-    
-                // Show or hide sub-tasks and comment based on the radio button selection
-                if (aumYes.checked) {
-                    aumTasks.classList.remove('hidden');  // Show sub-tasks if Yes is selected
-                } else if (aumNo.checked) {
-                    aumComment.classList.remove('hidden');  // Show comment section if No is selected
-                }
-            }
-    
-            // Ensure that the tasks are hidden on page load if no option is selected
-            window.addEventListener('DOMContentLoaded', function() {
-                updateAUM();
-            });
-    </script>
-    <script>
+        }
+
+        // Ensure that the tasks are hidden on page load if no option is selected
+        window.addEventListener('DOMContentLoaded', function() {
+            updateAUM();
+        });
         // Function to update the visibility of foreign drop-off tasks
-        function updateForeignDropOff() {
-            const foreignDropOffYes = document.querySelector('input[name="foreignDropOff"][value="yes"]');
-            const foreignDropOffNo = document.querySelector('input[name="foreignDropOff"][value="no"]');
-            const foreignDropOffTasks = document.getElementById('foreignDropOffTasks');
-    
-            if (foreignDropOffYes.checked) {
-                foreignDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
-            } else if (foreignDropOffNo.checked) {
-                foreignDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
-            }
-        }
-    
-        // Function to update the visibility of transactional drop-off tasks
-        function updateTransactionalDropOff() {
-            const transactionalDropOffYes = document.querySelector('input[name="transactionalDropOff"][value="yes"]');
-            const transactionalDropOffNo = document.querySelector('input[name="transactionalDropOff"][value="no"]');
-            const transactionalDropOffTasks = document.getElementById('transactionalDropOffTasks');
-    
-            if (transactionalDropOffYes.checked) {
-                transactionalDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
-            } else if (transactionalDropOffNo.checked) {
-                transactionalDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
-            }
-        }
-    
-        // Function to update the visibility of cash drop-off tasks
-        function updateCashDropOff() {
-            const cashDropOffYes = document.querySelector('input[name="cashDropOff"][value="yes"]');
-            const cashDropOffNo = document.querySelector('input[name="cashDropOff"][value="no"]');
-            const cashDropOffTasks = document.getElementById('cashDropOffTasks');
-    
-            if (cashDropOffYes.checked) {
-                cashDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
-            } else if (cashDropOffNo.checked) {
-                cashDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
-            }
-        }})
+function updateForeignDropOff() {
+    const foreignDropOffYes = document.querySelector('input[name="foreignDropOff"][value="yes"]');
+    const foreignDropOffNo = document.querySelector('input[name="foreignDropOff"][value="no"]');
+    const foreignDropOffTasks = document.getElementById('foreignDropOffTasks');
+
+    if (foreignDropOffYes.checked) {
+        foreignDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
+    } else if (foreignDropOffNo.checked) {
+        foreignDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
+    }
+}
+// Function to update the visibility of transactional drop-off tasks
+function updateTransactionalDropOff() {
+    const transactionalDropOffYes = document.querySelector('input[name="transactionalDropOff"][value="yes"]');
+    const transactionalDropOffNo = document.querySelector('input[name="transactionalDropOff"][value="no"]');
+    const transactionalDropOffTasks = document.getElementById('transactionalDropOffTasks');
+
+    if (transactionalDropOffYes.checked) {
+        transactionalDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
+    } else if (transactionalDropOffNo.checked) {
+        transactionalDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
+    }
+}
+// Function to update the visibility of cash drop-off tasks
+function updateCashDropOff() {
+    const cashDropOffYes = document.querySelector('input[name="cashDropOff"][value="yes"]');
+    const cashDropOffNo = document.querySelector('input[name="cashDropOff"][value="no"]');
+    const cashDropOffTasks = document.getElementById('cashDropOffTasks');
+
+    if (cashDropOffYes.checked) {
+        cashDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
+    } else if (cashDropOffNo.checked) {
+        cashDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
+    }
+}
     </script>
 </body>
 </html>
