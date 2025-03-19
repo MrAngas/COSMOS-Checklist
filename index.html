@@ -287,6 +287,7 @@
             <li><span>2025-03-04:</span> Updates: Added Hyperlinks that link to steps, that are related to 3946, AUM, Deposited securityes, Mandate holders "How-tos", also Change Log gets dark-mode.</li>
             <li><span>2025-03-17:</span> Updates: Added KINDI risk rating against customers own risk rating line with hiperlink. Also added exclamation mark on Change Log button, when Checklist is updated a red explanation mark appiers.</li>
             <li><span>2025-03-18:</span> Updates: Added Yes and No options for tasks that have mulltiple sub-tasks, added new sub-tasks for Is calculated AUM above 5MDKK. task.</li>
+            <li><span>2025-03-19:</span> Updates: Deleted NBV KINDI task and its sub comment-box, added additional information and hiperlinks to foreigh and cash tasks, also changed AUM hiperlink.</li>
             <!-- Add more change log entries as needed -->
         </ul>
     </div>
@@ -303,18 +304,6 @@
                 <input type="checkbox" class="task" onchange="updateProgress()">
             </label>
         </li>
-        <li>
-            <label>
-                <span>Check KINDI in Portal, if it is NBV:</span>
-                <input type="checkbox" class="task" onchange="updateProgress()">
-            </label>
-        </li>
-        <div class="comment-box">
-            Check ”Assets finance leasing” and based on analysis, mark CLM;
-            Delete expected behaviour in KYC;
-            Insure role "No business volume customer" is added.
-            Check KINDI risk rating against customers own risk rating, if the KINDI risk rating is higher follow Domas <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EZkqfKFeo6hMtIBbvcFZ1vUBZfb0f3g5Uk7rE91nogGipQ?e=eOwApb" target="_blank">letter</a>.
-        </div>
         <li>
     <label style="display: flex; align-items: center;">
         <span>Do you have “Transactional” drop-off, which requires Trust? (Example: Unclassified)</span>
@@ -350,7 +339,7 @@
 <ul class="sub-tasks hidden" id="cashDropOffTasks">
     <li>
         <label>
-            <span>Check deviation of cash transfers (from 0 to something is still major deviation). If cash transfers have deviation 25% and more – ensure the major deviation sentence is used for all cash transfers.</span>
+            <span>Check deviation of cash transfers (<a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EUXhOOVp9bxOoyjUaeDicmcB_A30UnGEUWRhC4BW--NdmQ?e=R09ud2" target="_blank">use thresholds table</a>). If cash transfers have deviation -/+ 25% and more – ensure the major deviation sentence is used for all cash transfers.</span>
             <input type="checkbox" class="task" onchange="updateProgress()">
         </label>
     </li>
@@ -373,7 +362,7 @@
         <ul class="sub-tasks hidden" id="foreignDropOffTasks">
     <li>
         <label>
-            <span>Check deviation of incoming and outgoing foreign transfers (from 0 to something is still major deviation). If incoming or outgoing foreign transfers have deviation 25% and more – ensure the major deviation sentence is used for all foreign transfers.</span>
+            <span>Check deviation of foreign transfers (<a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EUXhOOVp9bxOoyjUaeDicmcB_A30UnGEUWRhC4BW--NdmQ?e=R09ud2" target="_blank">use thresholds table</a>). If foreign transfers have deviation -/+ 25% and more – ensure the major deviation sentence is used for all foreign transfers</span>
             <input type="checkbox" class="task" onchange="updateProgress()">
         </label>
     </li>
@@ -386,7 +375,7 @@
 </ul>
         <li>
     <label style="display: flex; align-items: center;">
-        <span>Is calculated <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EcRYZXgE6ZhJhCXeuycnOZMBLns5loLjQvbH5xU4NphaAw?e=fjVwQB" target="_blank">AUM</a> above 5MDKK.</span>
+        <span>Is calculated <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EVUrhj2JSpNOkaL_Gc11bk0BRr5KJNuRYDCsWxpt8admdA?e=wJEBDo" target="_blank">AUM</a> above 5MDKK.</span>
         <div class="radio-buttons">
             <label><input type="radio" name="aum" value="yes" onclick="updateAUM()"> Yes</label>
             <label><input type="radio" name="aum" value="no" onclick="updateAUM()"> No</label>
@@ -447,7 +436,7 @@
     <button class="reset-button" onclick="resetTasks()">Reset</button>
     <div class="footer">
         If you encounter any errors or have a <a href="mailto:PSTAC@danskebank.lt?subject=COSMOS%20Checklist%20suggestions">suggestion</a>,reach me via Teams PSTAC<br>
-        Checklist updated on 2025.03.18<br>
+        Checklist updated on 2025.03.19<br>
     </div>
     <script>
         // Function to update the progress of tasks
@@ -507,17 +496,14 @@
     document.querySelectorAll('.aum-tasks, .aum-comment, #foreignDropOffTasks, #transactionalDropOffTasks, #cashDropOffTasks').forEach(section => {
         section.classList.add('hidden');   // Hide the section
     });
-
     updateProgress();
 }
-    
         // Function to toggle dark mode
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             document.querySelectorAll('.header, .task-list, .task-list li, .comment-box, .sub-tasks li, .footer, .dark-mode-toggle, .dropdown')
                 .forEach(el => el.classList.toggle('dark-mode'));
         }
-    
         // Function to toggle change log
         function toggleChangeLog() {
             const changeLog = document.getElementById('change-log');
@@ -525,32 +511,33 @@
         }
         ddocument.addEventListener("DOMContentLoaded", function() {
     const exclamationMark = document.getElementById('exclamation-mark');
+    document.addEventListener("DOMContentLoaded", function() {
+        const exclamationMark = document.getElementById('exclamation-mark');
 
-    // Extract the last update date from the change log
-    const changeLogEntries = document.querySelectorAll("#change-log ul li span");
-    const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
+        // Extract the last update date from the change log
+        const changeLogEntries = document.querySelectorAll("#change-log ul li span");
+        const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
 
-    if (localStorage.getItem('changeLogViewedDate') === lastUpdateDate) {
-        exclamationMark.style.display = 'none';
-    } else {
-        exclamationMark.style.display = 'flex';
+        if (localStorage.getItem('changeLogViewedDate') === lastUpdateDate) {
+            exclamationMark.style.display = 'none';
+        } else {
+            exclamationMark.style.display = 'flex';
+        }
+    });
+    function toggleChangeLog() {
+        const changeLog = document.getElementById('change-log');
+        const exclamationMark = document.getElementById('exclamation-mark');
+
+        // Extract the last update date from the change log
+        const changeLogEntries = document.querySelectorAll("#change-log ul li span");
+        const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
+
+        changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
+        if (changeLog.style.display === 'block') {
+            exclamationMark.style.display = 'none';
+            localStorage.setItem('changeLogViewedDate', lastUpdateDate);
+        }
     }
-});
-
-function toggleChangeLog() {
-    const changeLog = document.getElementById('change-log');
-    const exclamationMark = document.getElementById('exclamation-mark');
-
-    // Extract the last update date from the change log
-    const changeLogEntries = document.querySelectorAll("#change-log ul li span");
-    const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
-
-    changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
-    if (changeLog.style.display === 'block') {
-        exclamationMark.style.display = 'none';
-        localStorage.setItem('changeLogViewedDate', lastUpdateDate);
-    }
-}
 // Function to update the progress of tasks
         function updateProgress() {
             let totalTasks = 0;
