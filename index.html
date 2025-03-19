@@ -510,6 +510,11 @@
         checkbox.disabled = false;
         checkbox.classList.remove('disabled');
     });
+    
+// Hide the related tasks and comments
+        document.querySelectorAll('.aum-tasks, .aum-comment, #foreignDropOffTasks, #transactionalDropOffTasks, #cashDropOffTasks, #highRiskKINDIComment').forEach(section => {
+            section.classList.add('hidden');   // Hide the section
+        });
 
     // Reset radio buttons (set to no selection)
     document.querySelectorAll('input[name="aum"], input[name="foreignDropOff"], input[name="transactionalDropOff"], input[name="highRiskKINDI"], input[name="cashDropOff"]').forEach(radio => {
