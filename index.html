@@ -451,6 +451,27 @@
         Checklist updated on 2025.03.19<br>
     </div>
     <script>
+            // Function to reset all tasks
+    function resetTasks() {
+        document.querySelectorAll('.task, .main-task').forEach(checkbox => {
+            checkbox.checked = false;
+            checkbox.disabled = false;
+            checkbox.classList.remove('disabled');
+        });
+
+        // Reset radio buttons (set to no selection)
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.checked = false;   // Uncheck all radio buttons
+        });
+
+        // Hide the related tasks and comments
+        document.querySelectorAll('.hidden').forEach(section => {
+            section.classList.add('hidden');   // Hide the section
+        });
+
+        updateProgress();
+        updateHighRiskKINDI();  // Ensure High Risk KINDI comment is hidden on reset
+    }
         // Function to update the visibility of the High Risk KINDI comment
     function updateHighRiskKINDI() {
         const highRiskKINDIYes = document.querySelector('input[name="highRiskKINDI"][value="yes"]');
