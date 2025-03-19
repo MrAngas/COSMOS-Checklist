@@ -496,14 +496,17 @@
     document.querySelectorAll('.aum-tasks, .aum-comment, #foreignDropOffTasks, #transactionalDropOffTasks, #cashDropOffTasks').forEach(section => {
         section.classList.add('hidden');   // Hide the section
     });
+
     updateProgress();
 }
+
         // Function to toggle dark mode
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             document.querySelectorAll('.header, .task-list, .task-list li, .comment-box, .sub-tasks li, .footer, .dark-mode-toggle, .dropdown')
                 .forEach(el => el.classList.toggle('dark-mode'));
         }
+
         // Function to toggle change log
         function toggleChangeLog() {
             const changeLog = document.getElementById('change-log');
@@ -523,6 +526,7 @@
         } else {
             exclamationMark.style.display = 'flex';
         }
+
     });
     function toggleChangeLog() {
         const changeLog = document.getElementById('change-log');
@@ -538,6 +542,7 @@
             localStorage.setItem('changeLogViewedDate', lastUpdateDate);
         }
     }
+    
 // Function to update the progress of tasks
         function updateProgress() {
             let totalTasks = 0;
