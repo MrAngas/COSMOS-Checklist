@@ -275,6 +275,7 @@
         <img src="unnamed.png" alt="Danske Bank Logo">
         COSMOS Checklist
         <div class="header-buttons">
+            <button class="download-calculator" onclick="window.location.href='https://github.com/MrAngas/COSMOS-Checklist/raw/main/Procentage%20calculator.xlsx'">Download Procentage Calculator</button>
             <button class="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</button>
             <button class="change-log-toggle" onclick="toggleChangeLog()">Change Log <span class="exclamation-mark" id="exclamation-mark">!</span></button>
         </div>
@@ -289,16 +290,11 @@
             <li><span>2025-03-18:</span> Updates: Added Yes and No options for tasks that have mulltiple sub-tasks, added new sub-tasks for Is calculated AUM above 5MDKK. task.</li>
             <li><span>2025-03-19:</span> Updates: updated NBV KINDI task and its sub comment-box to High risk KINDI, added additional information and hiperlinks to foreigh and cash tasks, also changed AUM hiperlink.</li>
             <li><span>2025-03-25:</span> Updates: Changed wording on KINDI task.</li>
+            <li><span>2025-05-09:</span> Updates: Deleted 1 task, changed wording on “Transactional” drop-off text, also added new button for downloading Procentage calculator excel file.</li>
             <!-- Add more change log entries as needed -->
         </ul>
     </div>
     <ul class="task-list" id="task-list">
-        <li>
-            <label>
-                <span>Before handling the case, check in ICE whether the customer has the "New in PWM" trigger. If so, contact EDJA via Teams.</span>
-                <input type="checkbox" class="task" onchange="updateProgress()">
-            </label>
-        </li>
         <li>
             <label>
                 <span>Check if minor/elder has Managed accounts <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/Ef410zciF7xBhF51qo5PYeIBDaddtYZ8PkBEoz-8OyYTuA?e=X8BRzK" target="_blank">(3946)</a>.</span>
@@ -329,7 +325,7 @@
 <ul class="sub-tasks hidden" id="transactionalDropOffTasks">
     <li>
         <label>
-            <span>Write SOF assessment in the case conclusion. If needed add the reason of deduction.</span>
+            <span>Write SOF assessment in the case conclusion. If deductions are needed, create the „source of funds“ drop-off.</span>
             <input type="checkbox" class="task" onchange="updateProgress()">
         </label>
     </li>
@@ -449,7 +445,7 @@
     <button class="reset-button" onclick="resetTasks()">Reset</button>
     <div class="footer">
         If you encounter any errors or have a <a href="mailto:PSTAC@danskebank.lt?subject=COSMOS%20Checklist%20suggestions">suggestion</a>, reach me via Teams PSTAC<br>
-        Checklist updated on 2025.03.25<br>
+        Checklist updated on 2025.05.09<br>
     </div>
     <script>
         // Function to update the visibility of the High Risk KINDI comment
