@@ -1,186 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Secret Code Explanation:
-         - The reset button unchecks all tasks without refreshing the page.
-         - The dark mode button toggles the dark theme for the page.
-         - The design is responsive for different screen sizes.
-         - Clicking "suggestion" opens the mail app with recipient and subject pre-filled.
-         - Change Log button toggles the visibility of the change log.
-         - Hyperlinks turn green in dark mode.
-         - Red Explanation mark appiers when there is recent features added to Change Log.
-         - Clicking No hides not necessary sub-tasks.
-         COSMOS checklist made by Paulina PISTAC@danskebank.lt
+    <!-- 
+        Secret Code Explanation:
+        - All subtasks and comment boxes are styled identically for visual distinction.
+        - The reset button unchecks all tasks without refreshing the page.
+        - The dark mode button toggles the dark theme for the page.
+        - The design is responsive for different screen sizes.
+        - Clicking "suggestion" opens the mail app with recipient and subject pre-filled.
+        - Change Log button toggles the visibility of the change log.
+        - Hyperlinks turn green in dark mode.
+        - Red Explanation mark appiers when there is recent features added to Change Log.
+        - Clicking No hides not necessary sub-tasks.
+        - COSMOS checklist made by Paulina PISTAC@danskebank.lt
     -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COSMOS Checklist</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Inter font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
+        :root {
+            --bg-main: #F6F8FB;
+            --bg-card: #fff;
+            --border: #E6EBF1;
+            --subtask-bg: #f9fafc;
+            --subtask-outline: #e0e6ef;
+            --text-main: #102130;
+            --primary: #0070C9;
+            --primary-dark: #005FAD;
+            --primary-light: #E6F1FB;
+            --green-bg: #D8F5E6;
+            --green-txt: #1B7A54;
+            --blue-bg: #E6F1FB;
+            --blue-txt: #0070C9;
+            --orange: #C66A0A;
+            --radius: 12px;
+            --font-main: 'Inter', Arial, sans-serif;
+            --shadow: 0 2px 8px 0 rgba(16,33,48,0.04);
+        }
+        html, body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: var(--font-main);
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+        }
+        body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            transition: background-color 0.3s, color 0.3s;
         }
         .header {
+            background: var(--bg-card);
+            width: 100%;
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            padding: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            background: #fff;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            transition: background-color 0.3s, color 0.3s;
+            padding: 24px 0 16px 0;
+            margin-bottom: 32px;
+            z-index: 2;
         }
         .header img {
             position: absolute;
-            left: 20px;
+            left: 32px;
             width: 120px;
         }
+        .header-content {
+            font-family: var(--font-main);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            flex: 1;
+            text-align: center;
+            letter-spacing: -0.01em;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         .header-buttons {
-            position: absolute;
-            right: 20px;
-            top: 20px;
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            position: absolute;
+            right: 32px;
+            top: 24px;
         }
         .header button {
-            background: transparent;
-            color: #007bff;
-            border: 2px solid #007bff;
-            border-radius: 5px;
-            padding: 10px 20px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 32px;
+            font-family: var(--font-main);
+            font-weight: 600;
+            font-size: 15px;
+            padding: 8px 22px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s, color 0.3s;
+            box-shadow: none;
+            outline: none;
+            transition: background 0.18s;
+            letter-spacing: 0.01em;
+        }
+        .header button:hover {
+            background: var(--primary-dark);
+        }
+        .dark-mode .header button, .header button.dark-mode {
+            background: #1a2533;
+            color: #fff;
+            border: none;
         }
         .exclamation-mark {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: red;
-            color: white;
+            margin-left: 4px;
+            background: #C33A2F;
+            color: #fff;
             border-radius: 50%;
             width: 20px;
             height: 20px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             font-weight: bold;
+            position: relative;
+            top: -2px;
         }
         .task-list {
+            width: 95%;
+            max-width: 840px;
+            margin: 0 auto;
+            margin-top: 0;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            padding: 28px 30px 20px 30px;
             list-style: none;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            margin-top: 40px;
-            width: 50%;
-            max-width: 800px;
             text-align: left;
-            transition: background-color 0.3s, color 0.3s;
+            z-index: 1;
         }
         .task-list li {
+            background: transparent;
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 10px 0;
-            font-size: 18px;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
+            flex-direction: column;
+            align-items: stretch;
+            font-size: 1.09rem;
+            font-weight: 500;
+        }
+        .task-list li:last-child {
+            border-bottom: none;
         }
         .task-list label {
             display: flex;
             justify-content: space-between;
             align-items: center;
             width: 100%;
+            font-weight: 500;
+            gap: 8px;
         }
-        .comment-box {
-            width: 100%;
-            background-color: #e9ecef;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 14px;
-            color: #495057;
-            text-align: left;
-            white-space: pre-wrap;
-            transition: background-color 0.3s, color 0.3s;
+        .task-list a {
+            color: var(--primary);
+            text-decoration: underline dotted;
+            font-weight: 600;
         }
-        .task-list input {
-            transform: scale(1.5);
-            margin-left: 10px;
+        .task-list input[type="checkbox"], .task-list input[type="radio"] {
+            accent-color: var(--primary);
+            width: 20px;
+            height: 20px;
+            margin-left: 14px;
         }
+        /* Sub-task wrapper: visually distinct, outlined, padded, rounded */
         .sub-tasks {
             list-style: none;
-            margin-left: 20px;
-            padding-left: 20px;
-            border-left: 2px dashed #ccc;
+            margin: 8px 0 0 0;
+            padding: 0;
+            border: none;
         }
         .sub-tasks li {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-main);
+            background: var(--subtask-bg);
+            border: 1.5px solid var(--subtask-outline);
+            border-radius: 10px;
+            margin: 0 0 10px 0;
+            padding: 16px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 8px 0;
-            font-size: 16px;
-            padding: 8px;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
+            box-sizing: border-box;
+            transition: background 0.2s, border 0.2s;
+        }
+        .sub-tasks li:last-child {
+            margin-bottom: 0;
+        }
+        .dark-mode .sub-tasks li {
+            background: #232c3a;
+            border-color: #343c49;
+            color: #e0e4e9;
+        }
+        /* Comment boxes: same style everywhere, fully aligned, matching subtask look */
+        .comment-box {
+            width: 100%;
+            background: var(--subtask-bg);
+            border: 1.5px solid var(--subtask-outline);
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin: 12px 0 12px 0;
+            font-size: 1rem;
+            color: var(--text-main);
+            white-space: pre-wrap;
+            box-sizing: border-box;
+            display: block;
+        }
+        .dark-mode .comment-box {
+            background: #232c3a;
+            border-color: #343c49;
+            color: #e0e4e9;
+        }
+        #highRiskKINDIComment {
+            word-break: break-word;
+        }
+        #highRiskKINDIComment a {
+            white-space: nowrap;
         }
         .disabled {
             opacity: 0.5;
             pointer-events: none;
         }
         .reset-button {
-            margin-top: 20px;
-            padding: 20px 40px;
-            background: linear-gradient(90deg, #ff4b5c, #ff1e3c);
-            color: white;
+            margin: 36px 0 10px 0;
+            padding: 14px 40px;
+            background: var(--primary);
+            color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 32px;
+            font-family: var(--font-main);
+            font-weight: 700;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: background 0.3s, box-shadow 0.3s;
-            font-size: 20px;
+            transition: background 0.18s;
+            box-shadow: var(--shadow);
         }
         .reset-button:hover {
-            background: linear-gradient(90deg, #ff1e3c, #d90429);
+            background: var(--primary-dark);
         }
         .footer {
             margin-top: auto;
-            padding: 10px;
-            background: #fff;
-            box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
-            font-size: 14px;
-            color: #555;
+            padding: 24px 8px 16px 8px;
+            background: transparent;
+            font-size: 15px;
+            color: #7B8898;
             width: 100%;
             text-align: center;
-            transition: background-color 0.3s, color 0.3s;
         }
         .dropdown {
             display: none;
             position: absolute;
-            top: 60px;
-            right: 20px;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            top: 85px;
+            right: 38px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 340px;
             text-align: left;
             z-index: 1000;
         }
@@ -190,109 +278,129 @@
             padding: 10px;
         }
         .dropdown ul li {
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
+            padding: 10px 4px;
+            border-bottom: 1px solid var(--border);
         }
         .dropdown ul li:last-child {
             border-bottom: none;
         }
         .dropdown ul li span {
-            font-weight: bold;
+            font-weight: 600;
             margin-right: 10px;
         }
-        body.dark-mode {
-            background-color: #121212;
-            color: #e0e0e0;
+        .dropdown button {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 18px;
+            font-family: var(--font-main);
+            font-weight: 500;
+            font-size: 14px;
+            padding: 5px 18px;
+            cursor: pointer;
+            margin: 0 2px;
+            transition: background 0.18s;
         }
-        .header.dark-mode {
-            background-color: #1f1f1f;
-            color: #e0e0e0;
+        .dropdown button:hover {
+            background: var(--primary-dark);
         }
-        .task-list.dark-mode {
-            background-color: #1f1f1f;
-            color: #e0e0e0;
-        }
-        .task-list li.dark-mode {
-            background-color: #2c2c2c;
-        }
-        .comment-box.dark-mode {
-            background-color: #2c2c2c;
-            color: #e0e0e0;
-        }
-        .sub-tasks li.dark-mode {
-            background-color: #2c2c2c;
-        }
-        .footer.dark-mode {
-            background-color: #1f1f1f;
-            color: #e0e0e0;
-        }
-        .header button.dark-mode {
-            background-color: transparent;
-            color: #e0e0e0;
-            border: 2px solid #e0e0e0;
-        }
-        .reset-button.dark-mode {
-            background: linear-gradient(90deg, #bb0a1e, #8b0000);
-        }
-        .dropdown.dark-mode {
-            background-color: #1f1f1f;
-            color: #e0e0e0;
-            border-color: #333;
-        }
-        .dark-mode a {
-            color: #556b2f; /* Green color for links in dark mode */
-        }
-        /* Style to hide elements by default */
-        .hidden {
-            display: none;
-        }
-
-        /* Additional styling for layout */
-        .aum-tasks {
-            margin-top: 10px;
-        }
-        .aum-tasks {
-            margin-top: 10px;
+        .dropdown .changelog-indicator {
+            color: #7B8898;
+            font-size: 13px;
         }
         .radio-buttons {
-        display: flex;
-        align-items: center;
-        gap: 5px; /* Adjust this value as needed */
-        margin-left: 10px; /* Adjust margin as needed */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 10px;
         }
         .radio-buttons label {
-        display: flex;
-        align-items: center;
-        margin-right: 5px; /* Adjust margin as needed */
+            display: flex;
+            align-items: center;
+            font-weight: 400;
+            margin-right: 8px;
         }
         .radio-buttons input[type="radio"] {
-        margin: 0 3px 0 0; /* Adjust this value as needed */
+            margin: 0 3px 0 0;
         }
-	</style>
+        .dark-mode {
+            background: #19212a !important;
+            color: #e0e4e9 !important;
+        }
+        .dark-mode .header, .dark-mode .task-list, .dark-mode .dropdown, .dark-mode .footer {
+            background: #232c3a !important;
+            color: #e0e4e9 !important;
+        }
+        .dark-mode .header-content {
+            color: #fff !important;
+        }
+        .dark-mode .task-list a {
+            color: #4fbe4f !important;
+        }
+        .hidden { display: none; }
+
+        /* Responsive header, side-by-side and mobile: header stacks vertically */
+        @media (max-width: 1150px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                min-height: unset;
+                padding-top: 28px;
+                padding-bottom: 12px;
+                position: static;
+            }
+            .header img {
+                position: static;
+                margin-bottom: 10px;
+                align-self: flex-start;
+            }
+            .header-content {
+                order: 2;
+                margin-bottom: 10px;
+                white-space: normal;
+                font-size: 1.3rem;
+            }
+            .header-buttons {
+                position: static;
+                order: 3;
+                margin-top: 8px;
+                justify-content: center;
+                flex-wrap: wrap;
+                top: unset;
+                right: unset;
+                width: 100%;
+            }
+        }
+        @media (max-width: 600px) {
+            .task-list { padding: 14px 2vw 10px 2vw; }
+            .header-content { font-size: 1.1rem; }
+            .header img { width: 80px; }
+            .header-buttons button { font-size: 13px; padding: 7px 12px; }
+            .header { padding: 10px 0; }
+            .dropdown { width: 97vw; right: 0vw; }
+        }
+    </style>
 </head>
 <body>
     <div class="header">
         <img src="unnamed.png" alt="Danske Bank Logo">
-        COSMOS Checklist
+        <div class="header-content">COSMOS Checklist</div>
         <div class="header-buttons">
-            <button class="download-calculator" onclick="window.location.href='https://github.com/MrAngas/COSMOS-Checklist/raw/main/Procentage%20calculator.xlsx'">Download Procentage Calculator</button>
+            <button class="download-calculator" onclick="window.location.href='https://github.com/MrAngas/COSMOS-Checklist/raw/main/Procentage%20calculator.xlsx'">Procentage Calculator</button>
             <button class="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</button>
             <button class="change-log-toggle" onclick="toggleChangeLog()">Change Log <span class="exclamation-mark" id="exclamation-mark">!</span></button>
         </div>
     </div>
+    <!-- Change Log Dropdown Carousel -->
     <div class="dropdown" id="change-log">
-        <ul>
-            <li><span>2025-02-27:</span> Initial release of the COSMOS checklist.</li>
-            <li><span>2025-02-28:</span> Updates: Clicking "suggestion" opens mail app with recipient and subject, Added Change Log button, Fixed wording in "Transactional" drop-off step.</li>
-            <li><span>2025-03-03:</span> Updates: Notes added on "Check KINDI in Portal" task.</li>
-            <li><span>2025-03-04:</span> Updates: Added Hyperlinks that link to steps, that are related to 3946, AUM, Deposited securityes, Mandate holders "How-tos", also Change Log gets dark-mode.</li>
-            <li><span>2025-03-17:</span> Updates: Added KINDI risk rating against customers own risk rating line with hiperlink. Also added exclamation mark on Change Log button, when Checklist is updated a red explanation mark appiers.</li>
-            <li><span>2025-03-18:</span> Updates: Added Yes and No options for tasks that have mulltiple sub-tasks, added new sub-tasks for Is calculated AUM above 5MDKK. task.</li>
-            <li><span>2025-03-19:</span> Updates: updated NBV KINDI task and its sub comment-box to High risk KINDI, added additional information and hiperlinks to foreigh and cash tasks, also changed AUM hiperlink.</li>
-            <li><span>2025-03-25:</span> Updates: Changed wording on KINDI task.</li>
-            <li><span>2025-05-09:</span> Updates: Deleted 1 task, changed wording on “Transactional” drop-off text, also added new button for downloading Procentage calculator excel file.</li>
-            <!-- Add more change log entries as needed -->
-        </ul>
+        <div id="change-log-entry"></div>
+        <div style="text-align:center;margin:10px 0;">
+            <button id="prev-changelog" type="button" style="margin-right:8px;">Previous</button>
+            <button id="next-changelog" type="button">Next</button>
+        </div>
+        <div class="changelog-indicator" style="text-align:center;">
+            <span id="changelog-indicator"></span>
+        </div>
     </div>
     <ul class="task-list" id="task-list">
         <li>
@@ -309,126 +417,126 @@
                     <label><input type="radio" name="highRiskKINDI" value="no" onclick="updateHighRiskKINDI()"> No</label>
                 </div>
             </label>
+            <div class="comment-box hidden" id="highRiskKINDIComment">
+                Check KINDI risk rating against customer's own risk rating, if the KINDI risk rating is higher, follow Domas <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EZkqfKFeo6hMtIBbvcFZ1vUBZfb0f3g5Uk7rE91nogGipQ?e=eOwApb" target="_blank">letter.</a>
+            </div>
         </li>
-        <div class="comment-box hidden" id="highRiskKINDIComment">
-            Check KINDI risk rating against customers own risk rating, if the KINDI risk rating is higher follow Domas <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EZkqfKFeo6hMtIBbvcFZ1vUBZfb0f3g5Uk7rE91nogGipQ?e=eOwApb" target="_blank">letter</a>.
-        </div>
         <li>
-    <label style="display: flex; align-items: center;">
-        <span>Do you have “Transactional” drop-off, which requires Trust? (Example: Unclassified)</span>
-        <div class="radio-buttons">
-            <label><input type="radio" name="transactionalDropOff" value="yes" onclick="updateTransactionalDropOff()"> Yes</label>
-            <label><input type="radio" name="transactionalDropOff" value="no" onclick="updateTransactionalDropOff()"> No</label>
-        </div>
-    </label>
-</li>
-<ul class="sub-tasks hidden" id="transactionalDropOffTasks">
-    <li>
-        <label>
-            <span>Write SOF assessment in the case conclusion. If deductions are needed, create the „source of funds“ drop-off.</span>
-            <input type="checkbox" class="task" onchange="updateProgress()">
-        </label>
-    </li>
-    <li>
-        <label>
-            <span>If deductions were made, make sure to add SOF “Other” sentence (in the table below).</span>
-            <input type="checkbox" class="task" onchange="updateProgress()">
-        </label>
-    </li>
-</ul>
-        <li>
-    <label style="display: flex; align-items: center;">
-        <span>Do you have cash drop-off?</span>
-        <div class="radio-buttons">
-            <label><input type="radio" name="cashDropOff" value="yes" onclick="updateCashDropOff()"> Yes</label>
-            <label><input type="radio" name="cashDropOff" value="no" onclick="updateCashDropOff()"> No</label>
-        </div>
-    </label>
-</li>
-<ul class="sub-tasks hidden" id="cashDropOffTasks">
-    <li>
-        <label>
-            <span>Check deviation of cash transfers (<a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EUXhOOVp9bxOoyjUaeDicmcB_A30UnGEUWRhC4BW--NdmQ?e=R09ud2" target="_blank">use thresholds table</a>). If cash transfers have deviation -/+ 25% and more – ensure the major deviation sentence is used for all cash transfers.</span>
-            <input type="checkbox" class="task" onchange="updateProgress()">
-        </label>
-    </li>
-    <li>
-        <label>
-            <span>If deductions were made, make sure to update expected behavior (in the table below).</span>
-            <input type="checkbox" class="task" onchange="updateProgress()">
-        </label>
-    </li>
-</ul>
-        <li>
-    <label style="display: flex; align-items: center;">
-        <span>Do you have foreign drop-off?</span>
-        <div class="radio-buttons">
-            <label><input type="radio" name="foreignDropOff" value="yes" onclick="updateForeignDropOff()"> Yes</label>
-            <label><input type="radio" name="foreignDropOff" value="no" onclick="updateForeignDropOff()"> No</label>
-        </div>
-    </label>
-</li>
-        <ul class="sub-tasks hidden" id="foreignDropOffTasks">
-    <li>
-        <label>
-            <span>Check deviation of foreign transfers (<a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EUXhOOVp9bxOoyjUaeDicmcB_A30UnGEUWRhC4BW--NdmQ?e=R09ud2" target="_blank">use thresholds table</a>). If foreign transfers have deviation -/+ 25% and more – ensure the major deviation sentence is used for all foreign transfers</span>
-            <input type="checkbox" class="task" onchange="updateProgress()">
-        </label>
-    </li>
-    <li>
-        <label>
-            <span>If deductions were made, make sure to update expected behavior (in the table below).</span>
-            <input type="checkbox" class="task" onchange="updateProgress()">
-        </label>
-    </li>
-</ul>
-        <li>
-    <label style="display: flex; align-items: center;">
-        <span>Is calculated <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EVUrhj2JSpNOkaL_Gc11bk0BRr5KJNuRYDCsWxpt8admdA?e=wJEBDo" target="_blank">AUM</a> above 5MDKK.</span>
-        <div class="radio-buttons">
-            <label><input type="radio" name="aum" value="yes" onclick="updateAUM()"> Yes</label>
-            <label><input type="radio" name="aum" value="no" onclick="updateAUM()"> No</label>
-        </div>
-    </label>
-</li>
-<div class="aum-tasks hidden">
-    <ul>
-        <li>
-            <label>
-                <span>Leave newly calculated AUM as it is</span>
-                <input type="checkbox" class="task" onchange="updateProgress()">
+            <label style="display: flex; align-items: center;">
+                <span>Do you have “Transactional” drop-off, which requires Trust? (Example: Unclassified)</span>
+                <div class="radio-buttons">
+                    <label><input type="radio" name="transactionalDropOff" value="yes" onclick="updateTransactionalDropOff()"> Yes</label>
+                    <label><input type="radio" name="transactionalDropOff" value="no" onclick="updateTransactionalDropOff()"> No</label>
+                </div>
             </label>
+            <ul class="sub-tasks hidden" id="transactionalDropOffTasks">
+                <li>
+                    <label>
+                        <span>Write SOF assessment in the case conclusion. If deductions are needed, create the „source of funds“ drop-off.</span>
+                        <input type="checkbox" class="task" onchange="updateProgress()">
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <span>If deductions were made, make sure to add SOF “Other” sentence (in the table below).</span>
+                        <input type="checkbox" class="task" onchange="updateProgress()">
+                    </label>
+                </li>
+            </ul>
         </li>
         <li>
-            <label>
-                <span>Check customer`s pensions (PensionInfo doc., Wealth Planner, Portal)</span>
-                <input type="checkbox" class="task" onchange="updateProgress()">
+            <label style="display: flex; align-items: center;">
+                <span>Do you have cash drop-off?</span>
+                <div class="radio-buttons">
+                    <label><input type="radio" name="cashDropOff" value="yes" onclick="updateCashDropOff()"> Yes</label>
+                    <label><input type="radio" name="cashDropOff" value="no" onclick="updateCashDropOff()"> No</label>
+                </div>
             </label>
+            <ul class="sub-tasks hidden" id="cashDropOffTasks">
+                <li>
+                    <label>
+                        <span>Check deviation of cash transfers (<a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EUXhOOVp9bxOoyjUaeDicmcB_A30UnGEUWRhC4BW--NdmQ?e=R09ud2" target="_blank">use thresholds table</a>). If cash transfers have deviation -/+ 25% and more – ensure the major deviation sentence is used for all cash transfers.</span>
+                        <input type="checkbox" class="task" onchange="updateProgress()">
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <span>If deductions were made, make sure to update expected behavior (in the table below).</span>
+                        <input type="checkbox" class="task" onchange="updateProgress()">
+                    </label>
+                </li>
+            </ul>
         </li>
         <li>
-            <label>
-                <span>Check customer`s real estate (Portal, Wealth Planner, BiQ, Annual tax assessment, capital statement)</span>
-                <input type="checkbox" class="task" onchange="updateProgress()">
+            <label style="display: flex; align-items: center;">
+                <span>Do you have foreign drop-off?</span>
+                <div class="radio-buttons">
+                    <label><input type="radio" name="foreignDropOff" value="yes" onclick="updateForeignDropOff()"> Yes</label>
+                    <label><input type="radio" name="foreignDropOff" value="no" onclick="updateForeignDropOff()"> No</label>
+                </div>
             </label>
+            <ul class="sub-tasks hidden" id="foreignDropOffTasks">
+                <li>
+                    <label>
+                        <span>Check deviation of foreign transfers (<a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EUXhOOVp9bxOoyjUaeDicmcB_A30UnGEUWRhC4BW--NdmQ?e=R09ud2" target="_blank">use thresholds table</a>). If foreign transfers have deviation -/+ 25% and more – ensure the major deviation sentence is used for all foreign transfers</span>
+                        <input type="checkbox" class="task" onchange="updateProgress()">
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <span>If deductions were made, make sure to update expected behavior (in the table below).</span>
+                        <input type="checkbox" class="task" onchange="updateProgress()">
+                    </label>
+                </li>
+            </ul>
         </li>
         <li>
-            <label>
-                <span>Check customer`s owned companies (Portal, BiQ, Wealth Planner)</span>
-                <input type="checkbox" class="task" onchange="updateProgress()">
+            <label style="display: flex; align-items: center;">
+                <span>Is calculated <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EVUrhj2JSpNOkaL_Gc11bk0BRr5KJNuRYDCsWxpt8admdA?e=wJEBDo" target="_blank">AUM</a> above 5MDKK.</span>
+                <div class="radio-buttons">
+                    <label><input type="radio" name="aum" value="yes" onclick="updateAUM()"> Yes</label>
+                    <label><input type="radio" name="aum" value="no" onclick="updateAUM()"> No</label>
+                </div>
             </label>
+            <div class="aum-tasks hidden">
+                <ul class="sub-tasks">
+                    <li>
+                        <label>
+                            <span>Leave newly calculated AUM as it is</span>
+                            <input type="checkbox" class="task" onchange="updateProgress()">
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <span>Check customer`s pensions (PensionInfo doc., Wealth Planner, Portal)</span>
+                            <input type="checkbox" class="task" onchange="updateProgress()">
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <span>Check customer`s real estate (Portal, Wealth Planner, BiQ, Annual tax assessment, capital statement)</span>
+                            <input type="checkbox" class="task" onchange="updateProgress()">
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <span>Check customer`s owned companies (Portal, BiQ, Wealth Planner)</span>
+                            <input type="checkbox" class="task" onchange="updateProgress()">
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <span>If customer`s AUM is above 75 MDKK, perform AMS.</span>
+                            <input type="checkbox" class="task" onchange="updateProgress()">
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <div class="aum-comment hidden comment-box">
+                Leave newly calculated AUM as it is;
+                Delete all old registrations from Source of Wealth table in Portal.
+            </div>
         </li>
-        <li>
-            <label>
-                <span>If customer`s AUM is above 75 MDKK, perform AMS.</span>
-                <input type="checkbox" class="task" onchange="updateProgress()">
-            </label>
-        </li>
-    </ul>
-</div>
-<div class="aum-comment hidden comment-box">
-    Leave newly calculated AUM as it is;
-    Delete all old registrations from Source of Wealth table in Portal.
-</div>
         <li>
             <label>
                 <span>Check <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EYTol5Z34i1Fgdo-nlMolGQB4deNhHG1WTv2mBPZBVdXyw?e=XDlIgI" target="_blank">deposit securities</a> (the review period is provided in TRUST for each customer). Comment on case conclusion, if there was any.</span>
@@ -445,198 +553,116 @@
     <button class="reset-button" onclick="resetTasks()">Reset</button>
     <div class="footer">
         If you encounter any errors or have a <a href="mailto:PSTAC@danskebank.lt?subject=COSMOS%20Checklist%20suggestions">suggestion</a>, reach me via Teams PSTAC<br>
-        Checklist updated on 2025.05.09<br>
+        Checklist updated on 2025.05.16<br>
     </div>
     <script>
-        // Function to update the visibility of the High Risk KINDI comment
-    function updateHighRiskKINDI() {
-        const highRiskKINDIYes = document.querySelector('input[name="highRiskKINDI"][value="yes"]');
-        const highRiskKINDINo = document.querySelector('input[name="highRiskKINDI"][value="no"]');
-        const highRiskKINDIComment = document.getElementById('highRiskKINDIComment');
-
-        if (highRiskKINDIYes.checked) {
-            highRiskKINDIComment.classList.remove('hidden'); // Show comment if Yes is selected
-        } else if (highRiskKINDINo.checked) {
-            highRiskKINDIComment.classList.add('hidden'); // Hide comment if No is selected
+        // --- CHANGE LOG CAROUSEL CODE ---
+        const changeLogEntries = [
+            { date: "2025-02-27", text: "Initial release of the COSMOS checklist." },
+            { date: "2025-02-28", text: "Updates: Clicking \"suggestion\" opens mail app with recipient and subject, Added Change Log button, Fixed wording in \"Transactional\" drop-off step." },
+            { date: "2025-03-03", text: "Updates: Notes added on \"Check KINDI in Portal\" task." },
+            { date: "2025-03-04", text: "Updates: Added Hyperlinks that link to steps, that are related to 3946, AUM, Deposited securityes, Mandate holders \"How-tos\", also Change Log gets dark-mode." },
+            { date: "2025-03-17", text: "Updates: Added KINDI risk rating against customers own risk rating line with hiperlink. Also added exclamation mark on Change Log button, when Checklist is updated a red explanation mark appiers." },
+            { date: "2025-03-18", text: "Updates: Added Yes and No options for tasks that have mulltiple sub-tasks, added new sub-tasks for Is calculated AUM above 5MDKK. task." },
+            { date: "2025-03-19", text: "Updates: updated NBV KINDI task and its sub comment-box to High risk KINDI, added additional information and hiperlinks to foreigh and cash tasks, also changed AUM hiperlink." },
+            { date: "2025-03-25", text: "Updates: Changed wording on KINDI task." },
+            { date: "2025-05-09", text: "Updates: Deleted 1 task, changed wording on “Transactional” drop-off text, also added new button for downloading Procentage calculator excel file." },
+            { date: "2025-05-16", text: "Updates: Change Log changed from list to carousel, also whole page updated to look more like Cosmos apps." }
+        ];
+        let currentChangeLogIndex = changeLogEntries.length - 1;
+        function showChangeLogEntry(index) {
+            const entry = changeLogEntries[index];
+            const entryDiv = document.getElementById('change-log-entry');
+            entryDiv.innerHTML = `<ul><li><span>${entry.date}:</span> ${entry.text}</li></ul>`;
+            document.getElementById('changelog-indicator').textContent =
+                `Change ${index + 1} of ${changeLogEntries.length}`;
         }
-    }
-        // Function to update the progress of tasks
-        function updateProgress() {
-            let totalTasks = 0;
-            let completedTasks = 0;
-    
-            // Count all standalone tasks
-            document.querySelectorAll('.task:not(.main-task)').forEach(task => {
-                if (!task.closest('.sub-tasks')) { // Ignore subtasks
-                    totalTasks++;
-                    if (task.checked) completedTasks++;
-                }
-            });
-    
-            // Count and handle main tasks with sub-tasks
-            document.querySelectorAll('.main-task').forEach(mainTask => {
-                totalTasks++;
-                const subTasksContainer = mainTask.parentNode.nextElementSibling;
-                if (subTasksContainer && subTasksContainer.classList.contains('sub-tasks')) {
-                    const subTasks = subTasksContainer.querySelectorAll('.task');
-                    const anySubTaskChecked = [...subTasks].some(subTask => subTask.checked);
-                    if (mainTask.checked) {
-                        completedTasks++;
-                        subTasks.forEach(subTask => {
-                            subTask.disabled = true;
-                        });
-                    } else if (anySubTaskChecked) {
-                        subTasks.forEach(subTask => {
-                            subTask.disabled = false;
-                        });
-                        mainTask.disabled = true;
-                        mainTask.classList.add('disabled');
-                    } else {
-                        mainTask.disabled = false;
-                        mainTask.classList.remove('disabled');
-                    }
-                }
-            });
-    
-        }
-    
-        // Function to reset all tasks
-        function resetTasks() {
-    document.querySelectorAll('.task, .main-task').forEach(checkbox => {
-        checkbox.checked = false;
-        checkbox.disabled = false;
-        checkbox.classList.remove('disabled');
-    });
-    
-// Hide the related tasks and comments
-        document.querySelectorAll('.aum-tasks, .aum-comment, #foreignDropOffTasks, #transactionalDropOffTasks, #cashDropOffTasks, #highRiskKINDIComment').forEach(section => {
-            section.classList.add('hidden');   // Hide the section
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('prev-changelog').onclick = function() {
+                currentChangeLogIndex =
+                    (currentChangeLogIndex - 1 + changeLogEntries.length) % changeLogEntries.length;
+                showChangeLogEntry(currentChangeLogIndex);
+            };
+            document.getElementById('next-changelog').onclick = function() {
+                currentChangeLogIndex =
+                    (currentChangeLogIndex + 1) % changeLogEntries.length;
+                showChangeLogEntry(currentChangeLogIndex);
+            };
+            // Exclamation mark logic
+            const exclamationMark = document.getElementById('exclamation-mark');
+            const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].date;
+            if (localStorage.getItem('changeLogViewedDate') === lastUpdateDate) {
+                exclamationMark.style.display = 'none';
+            } else {
+                exclamationMark.style.display = 'flex';
+            }
+            // Ensure KINDI comment is hidden or shown based on default radio state
+            updateHighRiskKINDI();
         });
+        function toggleChangeLog() {
+            const changeLog = document.getElementById('change-log');
+            const exclamationMark = document.getElementById('exclamation-mark');
+            const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].date;
+            if (changeLog.style.display === 'block') {
+                changeLog.style.display = 'none';
+            } else {
+                changeLog.style.display = 'block';
+                exclamationMark.style.display = 'none';
+                localStorage.setItem('changeLogViewedDate', lastUpdateDate);
+                currentChangeLogIndex = changeLogEntries.length - 1;
+                showChangeLogEntry(currentChangeLogIndex);
+            }
+        }
+        // --- END CHANGE LOG CODE ---
+        // High Risk KINDI comment show/hide
+        function updateHighRiskKINDI() {
+            const yes = document.querySelector('input[name="highRiskKINDI"][value="yes"]');
+            const comment = document.getElementById('highRiskKINDIComment');
+            comment.classList.toggle('hidden', !(yes && yes.checked));
+        }
+        function updateTransactionalDropOff() {
+            const yes = document.querySelector('input[name="transactionalDropOff"][value="yes"]');
+            document.getElementById('transactionalDropOffTasks').classList.toggle('hidden', !yes.checked);
+        }
+        function updateCashDropOff() {
+            const yes = document.querySelector('input[name="cashDropOff"][value="yes"]');
+            document.getElementById('cashDropOffTasks').classList.toggle('hidden', !yes.checked);
+        }
+        function updateForeignDropOff() {
+            const yes = document.querySelector('input[name="foreignDropOff"][value="yes"]');
+            document.getElementById('foreignDropOffTasks').classList.toggle('hidden', !yes.checked);
+        }
+        function updateAUM() {
+            const yes = document.querySelector('input[name="aum"][value="yes"]');
+            const no = document.querySelector('input[name="aum"][value="no"]');
+            const aumTasks = document.querySelector('.aum-tasks');
+            const aumComment = document.querySelector('.aum-comment');
+            aumTasks.classList.toggle('hidden', !yes.checked);
+            aumComment.classList.toggle('hidden', !no.checked);
+        }
+        function resetTasks() {
+            document.querySelectorAll('.task').forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.disabled = false;
+                checkbox.classList.remove('disabled');
+            });
+            document.querySelectorAll('.aum-tasks, .aum-comment, #foreignDropOffTasks, #transactionalDropOffTasks, #cashDropOffTasks, #highRiskKINDIComment')
+                .forEach(section => section.classList.add('hidden'));
+            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
 
-    // Reset radio buttons (set to no selection)
-    document.querySelectorAll('input[name="aum"], input[name="foreignDropOff"], input[name="transactionalDropOff"], input[name="highRiskKINDI"], input[name="cashDropOff"]').forEach(radio => {
-        radio.checked = false;   // Uncheck all radio buttons
-    });
-
-    // Hide the related tasks and comments
-    document.querySelectorAll('.aum-tasks, .aum-comment, #foreignDropOffTasks, #transactionalDropOffTasks, #cashDropOffTasks, #highRiskKINDITasks').forEach(section => {
-        section.classList.add('hidden');   // Hide the section
-    });
-
-    updateProgress();
-}
-    
-        // Function to toggle dark mode
+            // Ensure KINDI comment is hidden after reset
+            updateHighRiskKINDI();
+        }
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             document.querySelectorAll('.header, .task-list, .task-list li, .comment-box, .sub-tasks li, .footer, .dark-mode-toggle, .dropdown')
                 .forEach(el => el.classList.toggle('dark-mode'));
         }
-    
-        // Function to toggle change log
-        function toggleChangeLog() {
-            const changeLog = document.getElementById('change-log');
-            changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
-        }
-        ddocument.addEventListener("DOMContentLoaded", function() {
-    const exclamationMark = document.getElementById('exclamation-mark');
-
-    // Extract the last update date from the change log
-    const changeLogEntries = document.querySelectorAll("#change-log ul li span");
-    const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
-
-    if (localStorage.getItem('changeLogViewedDate') === lastUpdateDate) {
-        exclamationMark.style.display = 'none';
-    } else {
-        exclamationMark.style.display = 'flex';
-    }
-});
-
-function toggleChangeLog() {
-    const changeLog = document.getElementById('change-log');
-    const exclamationMark = document.getElementById('exclamation-mark');
-
-    // Extract the last update date from the change log
-    const changeLogEntries = document.querySelectorAll("#change-log ul li span");
-    const lastUpdateDate = changeLogEntries[changeLogEntries.length - 1].textContent.trim();
-
-    changeLog.style.display = changeLog.style.display === 'block' ? 'none' : 'block';
-    if (changeLog.style.display === 'block') {
-        exclamationMark.style.display = 'none';
-        localStorage.setItem('changeLogViewedDate', lastUpdateDate);
-    }
-}
-// Function to update the progress of tasks
-        function updateProgress() {
-            let totalTasks = 0;
-            let completedTasks = 0;
-            // You can add your logic here to calculate the progress of tasks if needed
-        }
-
-        // Function to show/hide tasks and comments based on AUM selection
-        function updateAUM() {
-            console.log("updateAUM function triggered"); // Debugging log
-
-            // Get references to the Yes/No radio buttons and the task elements
-            const aumYes = document.querySelector('input[name="aum"][value="yes"]');
-            const aumNo = document.querySelector('input[name="aum"][value="no"]');
-            const aumTasks = document.querySelector('.aum-tasks');
-            const aumComment = document.querySelector('.aum-comment');
-
-            console.log("aumYes checked:", aumYes.checked, "aumNo checked:", aumNo.checked); // Debugging log
-
-            // Hide both sections initially
-            aumTasks.classList.add('hidden');
-            aumComment.classList.add('hidden');
-
-            // Show or hide sub-tasks and comment based on the radio button selection
-            if (aumYes.checked) {
-                aumTasks.classList.remove('hidden');  // Show sub-tasks if Yes is selected
-            } else if (aumNo.checked) {
-                aumComment.classList.remove('hidden');  // Show comment section if No is selected
-            }
-        }
-
-        // Ensure that the tasks are hidden on page load if no option is selected
         window.addEventListener('DOMContentLoaded', function() {
             updateAUM();
         });
-        // Function to update the visibility of foreign drop-off tasks
-function updateForeignDropOff() {
-    const foreignDropOffYes = document.querySelector('input[name="foreignDropOff"][value="yes"]');
-    const foreignDropOffNo = document.querySelector('input[name="foreignDropOff"][value="no"]');
-    const foreignDropOffTasks = document.getElementById('foreignDropOffTasks');
-
-    if (foreignDropOffYes.checked) {
-        foreignDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
-    } else if (foreignDropOffNo.checked) {
-        foreignDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
-    }
-}
-// Function to update the visibility of transactional drop-off tasks
-function updateTransactionalDropOff() {
-    const transactionalDropOffYes = document.querySelector('input[name="transactionalDropOff"][value="yes"]');
-    const transactionalDropOffNo = document.querySelector('input[name="transactionalDropOff"][value="no"]');
-    const transactionalDropOffTasks = document.getElementById('transactionalDropOffTasks');
-
-    if (transactionalDropOffYes.checked) {
-        transactionalDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
-    } else if (transactionalDropOffNo.checked) {
-        transactionalDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
-    }
-}
-// Function to update the visibility of cash drop-off tasks
-function updateCashDropOff() {
-    const cashDropOffYes = document.querySelector('input[name="cashDropOff"][value="yes"]');
-    const cashDropOffNo = document.querySelector('input[name="cashDropOff"][value="no"]');
-    const cashDropOffTasks = document.getElementById('cashDropOffTasks');
-
-    if (cashDropOffYes.checked) {
-        cashDropOffTasks.classList.remove('hidden'); // Show sub-tasks if Yes is selected
-    } else if (cashDropOffNo.checked) {
-        cashDropOffTasks.classList.add('hidden'); // Hide sub-tasks if No is selected
-    }
-}
+        // Dummy updateProgress to avoid errors
+        function updateProgress(){}
     </script>
 </body>
 </html>
