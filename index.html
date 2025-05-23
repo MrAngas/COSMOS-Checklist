@@ -410,6 +410,12 @@
             </label>
         </li>
         <li>
+            <label>
+                <span>Check customer`s/KINDI Lifecycle status <a href="​pdf icon https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EZjzBcC5_HpNncXmnUNTL2gBEh0R7tzIg75JL4JaJKsSug?e=raOeAK" target="_blank">(CLM)</a>.</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+        <li>
             <label style="display: flex; align-items: center;">
                 <span>Do you have KINDI, which has a higher risk rating compared to the customer?</span>
                 <div class="radio-buttons">
@@ -553,7 +559,7 @@
     <button class="reset-button" onclick="resetTasks()">Reset</button>
     <div class="footer">
         If you encounter any errors or have a <a href="mailto:PSTAC@danskebank.lt?subject=COSMOS%20Checklist%20suggestions">suggestion</a>, reach me via Teams PSTAC<br>
-        Checklist updated on 2025.05.16<br>
+        Checklist updated on 2025.05.23<br>
     </div>
     <script>
         // --- CHANGE LOG CAROUSEL CODE ---
@@ -567,7 +573,8 @@
             { date: "2025-03-19", text: "Updates: updated NBV KINDI task and its sub comment-box to High risk KINDI, added additional information and hiperlinks to foreigh and cash tasks, also changed AUM hiperlink." },
             { date: "2025-03-25", text: "Updates: Changed wording on KINDI task." },
             { date: "2025-05-09", text: "Updates: Deleted 1 task, changed wording on “Transactional” drop-off text, also added new button for downloading Procentage calculator excel file." },
-            { date: "2025-05-16", text: "Updates: Change Log changed from list to carousel, also whole page updated to look more like Cosmos apps." }
+            { date: "2025-05-16", text: "Updates: Change Log changed from list to carousel, also whole page updated to look more like Cosmos apps." },
+            { date: "2025-05-23", text: "Updates: Added new CLM task with active hyperlink to CLM decision tree." }
         ];
         let currentChangeLogIndex = changeLogEntries.length - 1;
         function showChangeLogEntry(index) {
