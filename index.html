@@ -339,7 +339,65 @@
         }
         .hidden { display: none; }
 
-        /* Responsive header, side-by-side and mobile: header stacks vertically */
+        .tasks-left-indicator {
+            color: #C33A2F;
+            font-weight: 700;
+            font-size: 1.18rem;
+            text-align: center;
+            margin-bottom: 5px;
+            min-height: 24px;
+        }
+        /* Well Done popup and confetti */
+        .well-done-popup {
+            position: fixed;
+            z-index: 9999;
+            left: 50%;
+            top: 30%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            color: #1B7A54;
+            border-radius: 18px;
+            box-shadow: 0 8px 48px 0 rgba(16,33,48,0.14);
+            padding: 36px 50px 36px 50px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            border: 3px solid #1B7A54;
+            display: none;
+            animation: popup-bounce 1.2s cubic-bezier(.32,1.93,.37,1) 1;
+        }
+        @keyframes popup-bounce {
+            0% { transform: translate(-50%, -70%) scale(0.7); opacity: 0; }
+            60% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+            80% { transform: translate(-50%, -48%) scale(0.99); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9998;
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 12px;
+            height: 18px;
+            border-radius: 2px;
+            opacity: 0.85;
+            will-change: transform, opacity;
+            animation: confetti-fall 2.2s linear forwards;
+        }
+        @keyframes confetti-fall {
+            0% { opacity: 1; }
+            100% { 
+                transform: translateY(90vh) rotateZ(360deg) scale(1.2);
+                opacity: 0.6;
+            }
+        }
         @media (max-width: 1150px) {
             .header {
                 flex-direction: column;
@@ -378,6 +436,8 @@
             .header-buttons button { font-size: 13px; padding: 7px 12px; }
             .header { padding: 10px 0; }
             .dropdown { width: 97vw; right: 0vw; }
+            .tasks-left-indicator { font-size: 1rem; }
+            .well-done-popup { font-size: 1.3rem; padding: 30px 10vw; }
         }
     </style>
 </head>
@@ -556,11 +616,15 @@
             </label>
         </li>
     </ul>
+    <div class="tasks-left-indicator" id="tasks-left-indicator"></div>
     <button class="reset-button" onclick="resetTasks()">Reset</button>
     <div class="footer">
         If you encounter any errors or have a <a href="mailto:PSTAC@danskebank.lt?subject=COSMOS%20Checklist%20suggestions">suggestion</a>, reach me via Teams PSTAC<br>
-        Checklist updated on 2025.05.23<br>
+        Checklist updated on 2025.05.29<br>
     </div>
+    <!-- Well Done popup and confetti container -->
+    <div class="well-done-popup" id="well-done-popup">🎉 Well Done! 🎉</div>
+    <div class="confetti" id="confetti"></div>
     <script>
         // --- CHANGE LOG CAROUSEL CODE ---
         const changeLogEntries = [
@@ -574,7 +638,8 @@
             { date: "2025-03-25", text: "Updates: Changed wording on KINDI task." },
             { date: "2025-05-09", text: "Updates: Deleted 1 task, changed wording on “Transactional” drop-off text, also added new button for downloading Procentage calculator excel file." },
             { date: "2025-05-16", text: "Updates: Change Log changed from list to carousel, also whole page updated to look more like Cosmos apps." },
-            { date: "2025-05-23", text: "Updates: Added new CLM task with active hyperlink to CLM decision tree." }
+            { date: "2025-05-23", text: "Updates: Added new CLM task with active hyperlink to CLM decision tree." },
+            { date: "2025-05-29", text: "Updates: Added new count for unchecked tasks, that helps minimize errors, also added fun stuff." }
         ];
         let currentChangeLogIndex = changeLogEntries.length - 1;
         function showChangeLogEntry(index) {
@@ -626,18 +691,22 @@
             const yes = document.querySelector('input[name="highRiskKINDI"][value="yes"]');
             const comment = document.getElementById('highRiskKINDIComment');
             comment.classList.toggle('hidden', !(yes && yes.checked));
+            updateTasksLeftIndicator();
         }
         function updateTransactionalDropOff() {
             const yes = document.querySelector('input[name="transactionalDropOff"][value="yes"]');
             document.getElementById('transactionalDropOffTasks').classList.toggle('hidden', !yes.checked);
+            updateTasksLeftIndicator();
         }
         function updateCashDropOff() {
             const yes = document.querySelector('input[name="cashDropOff"][value="yes"]');
             document.getElementById('cashDropOffTasks').classList.toggle('hidden', !yes.checked);
+            updateTasksLeftIndicator();
         }
         function updateForeignDropOff() {
             const yes = document.querySelector('input[name="foreignDropOff"][value="yes"]');
             document.getElementById('foreignDropOffTasks').classList.toggle('hidden', !yes.checked);
+            updateTasksLeftIndicator();
         }
         function updateAUM() {
             const yes = document.querySelector('input[name="aum"][value="yes"]');
@@ -646,6 +715,7 @@
             const aumComment = document.querySelector('.aum-comment');
             aumTasks.classList.toggle('hidden', !yes.checked);
             aumComment.classList.toggle('hidden', !no.checked);
+            updateTasksLeftIndicator();
         }
         function resetTasks() {
             document.querySelectorAll('.task').forEach(checkbox => {
@@ -659,6 +729,8 @@
 
             // Ensure KINDI comment is hidden after reset
             updateHighRiskKINDI();
+            // Also update the tasks left indicator after reset
+            updateTasksLeftIndicator();
         }
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
@@ -667,9 +739,169 @@
         }
         window.addEventListener('DOMContentLoaded', function() {
             updateAUM();
+            updateTasksLeftIndicator();
         });
         // Dummy updateProgress to avoid errors
-        function updateProgress(){}
+        function updateProgress(){
+            updateTasksLeftIndicator();
+        }
+
+        // --- TASKS LEFT INDICATOR CODE ---
+        let lastTasksUnchecked = null;
+        function updateTasksLeftIndicator() {
+            // List of all main tasks (li elements directly under #task-list)
+            const mainTasks = Array.from(document.querySelectorAll('#task-list > li'));
+            let totalTasks = 0;
+            let uncheckedTasks = 0;
+
+            function countVisibleSubTasks(parentUlId) {
+                const ul = document.getElementById(parentUlId);
+                if (!ul || ul.classList.contains('hidden')) return {total: 0, unchecked: 0};
+                const checkboxes = ul.querySelectorAll('input[type="checkbox"].task');
+                let subtasks = {total: checkboxes.length, unchecked: 0};
+                subtasks.unchecked = Array.from(checkboxes).filter(cb => !cb.checked).length;
+                return subtasks;
+            }
+            function countAUMSubTasks() {
+                const aumTasksDiv = document.querySelector('.aum-tasks');
+                if (!aumTasksDiv || aumTasksDiv.classList.contains('hidden')) return {total: 0, unchecked: 0};
+                const checkboxes = aumTasksDiv.querySelectorAll('input[type="checkbox"].task');
+                return {total: checkboxes.length, unchecked: Array.from(checkboxes).filter(cb => !cb.checked).length};
+            }
+            // [0]: Managed accounts
+            totalTasks++;
+            if (!mainTasks[0].querySelector('input[type="checkbox"].task').checked) uncheckedTasks++;
+            // [1]: Lifecycle status
+            totalTasks++;
+            if (!mainTasks[1].querySelector('input[type="checkbox"].task').checked) uncheckedTasks++;
+            // [7]: Deposit securities
+            totalTasks++;
+            if (!mainTasks[7].querySelector('input[type="checkbox"].task').checked) uncheckedTasks++;
+            // [8]: Mandate holders
+            totalTasks++;
+            if (!mainTasks[8].querySelector('input[type="checkbox"].task').checked) uncheckedTasks++;
+
+            // Transactional drop-off subtasks
+            let transactional = countVisibleSubTasks('transactionalDropOffTasks');
+            totalTasks += transactional.total;
+            uncheckedTasks += transactional.unchecked;
+            // Cash drop-off subtasks
+            let cash = countVisibleSubTasks('cashDropOffTasks');
+            totalTasks += cash.total;
+            uncheckedTasks += cash.unchecked;
+            // Foreign drop-off subtasks
+            let foreign = countVisibleSubTasks('foreignDropOffTasks');
+            totalTasks += foreign.total;
+            uncheckedTasks += foreign.unchecked;
+            // AUM subtasks
+            let aum = countAUMSubTasks();
+            totalTasks += aum.total;
+            uncheckedTasks += aum.unchecked;
+
+            // High Risk KINDI radio
+            const highRiskRadios = document.getElementsByName('highRiskKINDI');
+            let highRiskChecked = Array.from(highRiskRadios).some(r => r.checked);
+            totalTasks++;
+            if (!highRiskChecked) uncheckedTasks++;
+            // Transactional drop-off (radio)
+            const transactionalRadios = document.getElementsByName('transactionalDropOff');
+            let transactionalRadioChecked = Array.from(transactionalRadios).some(r => r.checked);
+            if (transactional.total === 0) {
+                totalTasks++;
+                if (!transactionalRadioChecked) uncheckedTasks++;
+            }
+            // Cash drop-off (radio)
+            const cashRadios = document.getElementsByName('cashDropOff');
+            let cashRadioChecked = Array.from(cashRadios).some(r => r.checked);
+            if (cash.total === 0) {
+                totalTasks++;
+                if (!cashRadioChecked) uncheckedTasks++;
+            }
+            // Foreign drop-off (radio)
+            const foreignRadios = document.getElementsByName('foreignDropOff');
+            let foreignRadioChecked = Array.from(foreignRadios).some(r => r.checked);
+            if (foreign.total === 0) {
+                totalTasks++;
+                if (!foreignRadioChecked) uncheckedTasks++;
+            }
+            // AUM (radio)
+            const aumRadios = document.getElementsByName('aum');
+            let aumRadioChecked = Array.from(aumRadios).some(r => r.checked);
+            if (aum.total === 0) {
+                totalTasks++;
+                if (!aumRadioChecked) uncheckedTasks++;
+            }
+            // Update the indicator
+            let indicator = document.getElementById('tasks-left-indicator');
+            if (uncheckedTasks === 1) {
+                indicator.textContent = 'There is 1 unchecked task.';
+            } else if (uncheckedTasks === 0) {
+                indicator.textContent = 'All tasks completed!';
+            } else {
+                indicator.textContent = `There are ${uncheckedTasks} unchecked tasks.`;
+            }
+            // Show the Well Done popup and confetti when all tasks are done
+            if (uncheckedTasks === 0 && lastTasksUnchecked !== 0) {
+                showWellDonePopup();
+            }
+            lastTasksUnchecked = uncheckedTasks;
+        }
+
+        function showWellDonePopup() {
+            const popup = document.getElementById('well-done-popup');
+            popup.style.display = 'block';
+            launchConfetti();
+            setTimeout(() => {
+                popup.style.display = 'none';
+                clearConfetti();
+            }, 2600); // About 2.5 seconds
+        }
+
+        function launchConfetti() {
+            clearConfetti();
+            const confettiColors = ["#1B7A54","#0070C9","#F2B400","#C33A2F","#4fbe4f","#C66A0A","#A259E6","#E76B74"];
+            const confetti = document.getElementById('confetti');
+            const pieces = 48;
+            for (let i = 0; i < pieces; i++) {
+                const div = document.createElement('div');
+                div.className = 'confetti-piece';
+                const color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                div.style.background = color;
+                div.style.left = (Math.random() * 100) + 'vw';
+                div.style.top = (Math.random() * 8) + 'vh';
+                div.style.opacity = 0.8 + Math.random() * 0.2;
+                div.style.transform = `rotate(${Math.random()*360}deg)`;
+                div.style.animationDuration = (2 + Math.random() * 0.8) + 's';
+                div.style.width = 10 + Math.random() * 10 + 'px';
+                div.style.height = 16 + Math.random() * 10 + 'px';
+                confetti.appendChild(div);
+            }
+        }
+        function clearConfetti() {
+            const confetti = document.getElementById('confetti');
+            while (confetti.firstChild) confetti.removeChild(confetti.firstChild);
+        }
+
+        // ... (the rest of your existing event listener hooking code remains the same) ...
+        document.querySelectorAll('input[type="radio"][name="highRiskKINDI"]').forEach(el => {
+            el.addEventListener('change', updateHighRiskKINDI);
+        });
+        document.querySelectorAll('input[type="radio"][name="transactionalDropOff"]').forEach(el => {
+            el.addEventListener('change', updateTransactionalDropOff);
+        });
+        document.querySelectorAll('input[type="radio"][name="cashDropOff"]').forEach(el => {
+            el.addEventListener('change', updateCashDropOff);
+        });
+        document.querySelectorAll('input[type="radio"][name="foreignDropOff"]').forEach(el => {
+            el.addEventListener('change', updateForeignDropOff);
+        });
+        document.querySelectorAll('input[type="radio"][name="aum"]').forEach(el => {
+            el.addEventListener('change', updateAUM);
+        });
+        document.querySelectorAll('input[type="checkbox"].task').forEach(el => {
+            el.addEventListener('change', updateTasksLeftIndicator);
+        });
+
     </script>
 </body>
 </html>
