@@ -367,6 +367,11 @@
             display: none;
             animation: popup-bounce 1.2s cubic-bezier(.32,1.93,.37,1) 1;
         }
+        .dark-mode .well-done-popup {
+    		background: #232c3a !important;
+    		color: #4fbe4f !important;
+    		border-color: #4fbe4f !important;
+		}
         @keyframes popup-bounce {
             0% { transform: translate(-50%, -70%) scale(0.7); opacity: 0; }
             60% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
@@ -471,6 +476,12 @@
         </li>
         <li>
             <label>
+                <span>Capture TRUST screenshot if customer or KINDI have transactional drop-off's.</span>
+                <input type="checkbox" class="task" onchange="updateProgress()">
+            </label>
+        </li>
+        <li>
+            <label>
                 <span>Check customer`s/KINDI Lifecycle status <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EZjzBcC5_HpNncXmnUNTL2gBEh0R7tzIg75JL4JaJKsSug?e=raOeAK" target="_blank">(CLM)</a>.</span>
                 <input type="checkbox" class="task" onchange="updateProgress()">
             </label>
@@ -499,6 +510,12 @@
                 <li>
                     <label>
                         <span>Write SOF assessment in the case conclusion. If deductions are needed, create the „source of funds“ drop-off.</span>
+                        <input type="checkbox" class="task" onchange="updateProgress()">
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <span>Pay attention to tax risk payments (rent, honorary, inheritance, gifts/loans, from owned companies, personal sales). If you find any of these, follow information in the <a href="https://danskebankgroup.sharepoint.com/:b:/t/FAQMA/EcOtip5PC3xOhNmonZn68ccBYEIvOqTd1Tp9SJmR5_39vQ?e=VZyqpy" target="_blank">slides</a> prepared by Žygintas and Karolis B.</span>
                         <input type="checkbox" class="task" onchange="updateProgress()">
                     </label>
                 </li>
@@ -620,7 +637,7 @@
     <button class="reset-button" onclick="resetTasks()">Reset</button>
     <div class="footer">
         If you encounter any errors or have a <a href="mailto:PSTAC@danskebank.lt?subject=COSMOS%20Checklist%20suggestions">suggestion</a>, reach me via Teams PSTAC<br>
-        Checklist updated on 2025.05.29<br>
+        Checklist updated on 2025.06.06<br>
     </div>
     <!-- Well Done popup and confetti container -->
     <div class="well-done-popup" id="well-done-popup">🎉 Well Done! 🎉</div>
@@ -632,14 +649,15 @@
             { date: "2025-02-28", text: "Updates: Clicking \"suggestion\" opens mail app with recipient and subject, Added Change Log button, Fixed wording in \"Transactional\" drop-off step." },
             { date: "2025-03-03", text: "Updates: Notes added on \"Check KINDI in Portal\" task." },
             { date: "2025-03-04", text: "Updates: Added Hyperlinks that link to steps, that are related to 3946, AUM, Deposited securityes, Mandate holders \"How-tos\", also Change Log gets dark-mode." },
-            { date: "2025-03-17", text: "Updates: Added KINDI risk rating against customers own risk rating line with hiperlink. Also added exclamation mark on Change Log button, when Checklist is updated a red explanation mark appiers." },
+            { date: "2025-03-17", text: "Updates: Added KINDI risk rating against customers own risk rating line with hyperlink. Also added exclamation mark on Change Log button, when Checklist is updated a red explanation mark appiers." },
             { date: "2025-03-18", text: "Updates: Added Yes and No options for tasks that have mulltiple sub-tasks, added new sub-tasks for Is calculated AUM above 5MDKK. task." },
-            { date: "2025-03-19", text: "Updates: updated NBV KINDI task and its sub comment-box to High risk KINDI, added additional information and hiperlinks to foreigh and cash tasks, also changed AUM hiperlink." },
+            { date: "2025-03-19", text: "Updates: updated NBV KINDI task and its sub comment-box to High risk KINDI, added additional information and hyperlinks to foreigh and cash tasks, also changed AUM hyperlink." },
             { date: "2025-03-25", text: "Updates: Changed wording on KINDI task." },
             { date: "2025-05-09", text: "Updates: Deleted 1 task, changed wording on “Transactional” drop-off text, also added new button for downloading Procentage calculator excel file." },
             { date: "2025-05-16", text: "Updates: Change Log changed from list to carousel, also whole page updated to look more like Cosmos apps." },
             { date: "2025-05-23", text: "Updates: Added new CLM task with active hyperlink to CLM decision tree." },
-            { date: "2025-05-29", text: "Updates: Added new count for unchecked tasks, that helps minimize errors, also added fun stuff." }
+            { date: "2025-05-29", text: "Updates: Added new count for unchecked tasks, that helps minimize errors, also added fun stuff." },
+            { date: "2025-06-06", text: "Updates: Added new TRUST screenshot task, also added tax risk sub-task with hyperlink to slides, also fixed Well Done! pop up in dark mode." }
         ];
         let currentChangeLogIndex = changeLogEntries.length - 1;
         function showChangeLogEntry(index) {
@@ -747,105 +765,99 @@
         }
 
         // --- TASKS LEFT INDICATOR CODE ---
-        let lastTasksUnchecked = null;
         function updateTasksLeftIndicator() {
-            // List of all main tasks (li elements directly under #task-list)
-            const mainTasks = Array.from(document.querySelectorAll('#task-list > li'));
-            let totalTasks = 0;
-            let uncheckedTasks = 0;
+    // List of all main tasks (li elements directly under #task-list)
+    const mainTasks = Array.from(document.querySelectorAll('#task-list > li'));
+    let totalTasks = 0;
+    let uncheckedTasks = 0;
 
-            function countVisibleSubTasks(parentUlId) {
-                const ul = document.getElementById(parentUlId);
-                if (!ul || ul.classList.contains('hidden')) return {total: 0, unchecked: 0};
-                const checkboxes = ul.querySelectorAll('input[type="checkbox"].task');
-                let subtasks = {total: checkboxes.length, unchecked: 0};
-                subtasks.unchecked = Array.from(checkboxes).filter(cb => !cb.checked).length;
-                return subtasks;
-            }
-            function countAUMSubTasks() {
-                const aumTasksDiv = document.querySelector('.aum-tasks');
-                if (!aumTasksDiv || aumTasksDiv.classList.contains('hidden')) return {total: 0, unchecked: 0};
-                const checkboxes = aumTasksDiv.querySelectorAll('input[type="checkbox"].task');
-                return {total: checkboxes.length, unchecked: Array.from(checkboxes).filter(cb => !cb.checked).length};
-            }
-            // [0]: Managed accounts
-            totalTasks++;
-            if (!mainTasks[0].querySelector('input[type="checkbox"].task').checked) uncheckedTasks++;
-            // [1]: Lifecycle status
-            totalTasks++;
-            if (!mainTasks[1].querySelector('input[type="checkbox"].task').checked) uncheckedTasks++;
-            // [7]: Deposit securities
-            totalTasks++;
-            if (!mainTasks[7].querySelector('input[type="checkbox"].task').checked) uncheckedTasks++;
-            // [8]: Mandate holders
-            totalTasks++;
-            if (!mainTasks[8].querySelector('input[type="checkbox"].task').checked) uncheckedTasks++;
+    function countVisibleSubTasks(parentUlId) {
+        const ul = document.getElementById(parentUlId);
+        if (!ul || ul.classList.contains('hidden')) return {total: 0, unchecked: 0};
+        const checkboxes = ul.querySelectorAll('input[type="checkbox"].task');
+        let subtasks = {total: checkboxes.length, unchecked: 0};
+        subtasks.unchecked = Array.from(checkboxes).filter(cb => !cb.checked).length;
+        return subtasks;
+    }
+    function countAUMSubTasks() {
+        const aumTasksDiv = document.querySelector('.aum-tasks');
+        if (!aumTasksDiv || aumTasksDiv.classList.contains('hidden')) return {total: 0, unchecked: 0};
+        const checkboxes = aumTasksDiv.querySelectorAll('input[type="checkbox"].task');
+        return {total: checkboxes.length, unchecked: Array.from(checkboxes).filter(cb => !cb.checked).length};
+    }
 
-            // Transactional drop-off subtasks
-            let transactional = countVisibleSubTasks('transactionalDropOffTasks');
-            totalTasks += transactional.total;
-            uncheckedTasks += transactional.unchecked;
-            // Cash drop-off subtasks
-            let cash = countVisibleSubTasks('cashDropOffTasks');
-            totalTasks += cash.total;
-            uncheckedTasks += cash.unchecked;
-            // Foreign drop-off subtasks
-            let foreign = countVisibleSubTasks('foreignDropOffTasks');
-            totalTasks += foreign.total;
-            uncheckedTasks += foreign.unchecked;
-            // AUM subtasks
-            let aum = countAUMSubTasks();
-            totalTasks += aum.total;
-            uncheckedTasks += aum.unchecked;
+    // Count all main checkboxes directly under the main #task-list (not inside sub-tasks)
+    const mainCheckboxes = Array.from(document.querySelectorAll('#task-list > li > label > input[type="checkbox"].task'));
+    mainCheckboxes.forEach(checkbox => {
+        totalTasks++;
+        if (!checkbox.checked) uncheckedTasks++;
+    });
 
-            // High Risk KINDI radio
-            const highRiskRadios = document.getElementsByName('highRiskKINDI');
-            let highRiskChecked = Array.from(highRiskRadios).some(r => r.checked);
-            totalTasks++;
-            if (!highRiskChecked) uncheckedTasks++;
-            // Transactional drop-off (radio)
-            const transactionalRadios = document.getElementsByName('transactionalDropOff');
-            let transactionalRadioChecked = Array.from(transactionalRadios).some(r => r.checked);
-            if (transactional.total === 0) {
-                totalTasks++;
-                if (!transactionalRadioChecked) uncheckedTasks++;
-            }
-            // Cash drop-off (radio)
-            const cashRadios = document.getElementsByName('cashDropOff');
-            let cashRadioChecked = Array.from(cashRadios).some(r => r.checked);
-            if (cash.total === 0) {
-                totalTasks++;
-                if (!cashRadioChecked) uncheckedTasks++;
-            }
-            // Foreign drop-off (radio)
-            const foreignRadios = document.getElementsByName('foreignDropOff');
-            let foreignRadioChecked = Array.from(foreignRadios).some(r => r.checked);
-            if (foreign.total === 0) {
-                totalTasks++;
-                if (!foreignRadioChecked) uncheckedTasks++;
-            }
-            // AUM (radio)
-            const aumRadios = document.getElementsByName('aum');
-            let aumRadioChecked = Array.from(aumRadios).some(r => r.checked);
-            if (aum.total === 0) {
-                totalTasks++;
-                if (!aumRadioChecked) uncheckedTasks++;
-            }
-            // Update the indicator
-            let indicator = document.getElementById('tasks-left-indicator');
-            if (uncheckedTasks === 1) {
-                indicator.textContent = 'There is 1 unchecked task.';
-            } else if (uncheckedTasks === 0) {
-                indicator.textContent = 'All tasks completed!';
-            } else {
-                indicator.textContent = `There are ${uncheckedTasks} unchecked tasks.`;
-            }
-            // Show the Well Done popup and confetti when all tasks are done
-            if (uncheckedTasks === 0 && lastTasksUnchecked !== 0) {
-                showWellDonePopup();
-            }
-            lastTasksUnchecked = uncheckedTasks;
-        }
+    // Transactional drop-off subtasks
+    let transactional = countVisibleSubTasks('transactionalDropOffTasks');
+    totalTasks += transactional.total;
+    uncheckedTasks += transactional.unchecked;
+    // Cash drop-off subtasks
+    let cash = countVisibleSubTasks('cashDropOffTasks');
+    totalTasks += cash.total;
+    uncheckedTasks += cash.unchecked;
+    // Foreign drop-off subtasks
+    let foreign = countVisibleSubTasks('foreignDropOffTasks');
+    totalTasks += foreign.total;
+    uncheckedTasks += foreign.unchecked;
+    // AUM subtasks
+    let aum = countAUMSubTasks();
+    totalTasks += aum.total;
+    uncheckedTasks += aum.unchecked;
+
+    // High Risk KINDI radio
+    const highRiskRadios = document.getElementsByName('highRiskKINDI');
+    let highRiskChecked = Array.from(highRiskRadios).some(r => r.checked);
+    totalTasks++;
+    if (!highRiskChecked) uncheckedTasks++;
+    // Transactional drop-off (radio)
+    const transactionalRadios = document.getElementsByName('transactionalDropOff');
+    let transactionalRadioChecked = Array.from(transactionalRadios).some(r => r.checked);
+    if (transactional.total === 0) {
+        totalTasks++;
+        if (!transactionalRadioChecked) uncheckedTasks++;
+    }
+    // Cash drop-off (radio)
+    const cashRadios = document.getElementsByName('cashDropOff');
+    let cashRadioChecked = Array.from(cashRadios).some(r => r.checked);
+    if (cash.total === 0) {
+        totalTasks++;
+        if (!cashRadioChecked) uncheckedTasks++;
+    }
+    // Foreign drop-off (radio)
+    const foreignRadios = document.getElementsByName('foreignDropOff');
+    let foreignRadioChecked = Array.from(foreignRadios).some(r => r.checked);
+    if (foreign.total === 0) {
+        totalTasks++;
+        if (!foreignRadioChecked) uncheckedTasks++;
+    }
+    // AUM (radio)
+    const aumRadios = document.getElementsByName('aum');
+    let aumRadioChecked = Array.from(aumRadios).some(r => r.checked);
+    if (aum.total === 0) {
+        totalTasks++;
+        if (!aumRadioChecked) uncheckedTasks++;
+    }
+    // Update the indicator
+    let indicator = document.getElementById('tasks-left-indicator');
+    if (uncheckedTasks === 1) {
+        indicator.textContent = 'There is 1 unchecked task.';
+    } else if (uncheckedTasks === 0) {
+        indicator.textContent = 'All tasks completed!';
+    } else {
+        indicator.textContent = `There are ${uncheckedTasks} unchecked tasks.`;
+    }
+    // Show the Well Done popup and confetti when all tasks are done
+    if (uncheckedTasks === 0 && lastTasksUnchecked !== 0) {
+        showWellDonePopup();
+    }
+    lastTasksUnchecked = uncheckedTasks;
+}
 
         function showWellDonePopup() {
             const popup = document.getElementById('well-done-popup');
