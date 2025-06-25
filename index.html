@@ -934,79 +934,78 @@
             el.addEventListener('change', updateTasksLeftIndicator);
         });
         
-        (function(){
+        document.addEventListener('DOMContentLoaded', function() {
     // Use your Render backend for analytics and live users
     const LIVE_API = "https://cosmos-checklist.onrender.com";
-
     const ANALYTICS_URL = LIVE_API + '/analytics';
     const LIVE_USERS_URL = LIVE_API + '/live-users';
 
-        function getSessionId() {
-            let sid = sessionStorage.getItem('cosmos_session_id');
-            if (!sid) {
-                sid = Math.random().toString(36).substring(2) + Date.now();
-                sessionStorage.setItem('cosmos_session_id', sid);
-            }
-            return sid;
+    function getSessionId() {
+        let sid = sessionStorage.getItem('cosmos_session_id');
+        if (!sid) {
+            sid = Math.random().toString(36).substring(2) + Date.now();
+            sessionStorage.setItem('cosmos_session_id', sid);
         }
+        return sid;
+    }
 
-        // --- EVENT TRACKING ---
-        const pageEnterTime = Date.now();
+    // --- EVENT TRACKING ---
+    const pageEnterTime = Date.now();
 
-        // Send visit event
+    // Send visit event
+    fetch(ANALYTICS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            event: 'visit',
+            sessionId: getSessionId(),
+            ts: new Date().toISOString(),
+            userAgent: navigator.userAgent
+        })
+    });
+
+    // Heartbeat every 30 seconds to keep session "live"
+    setInterval(() => {
         fetch(ANALYTICS_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                event: 'visit',
+                event: 'heartbeat',
                 sessionId: getSessionId(),
-                ts: new Date().toISOString(),
-                userAgent: navigator.userAgent
+                ts: new Date().toISOString()
             })
         });
+    }, 30000);
 
-        // Heartbeat every 30 seconds to keep session "live"
-        setInterval(() => {
-            fetch(ANALYTICS_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    event: 'heartbeat',
-                    sessionId: getSessionId(),
-                    ts: new Date().toISOString()
-                })
+    // On leave, send duration
+    window.addEventListener('beforeunload', function() {
+        const duration = Math.round((Date.now() - pageEnterTime)/1000);
+        navigator.sendBeacon(ANALYTICS_URL, JSON.stringify({
+            event: 'leave',
+            sessionId: getSessionId(),
+            ts: new Date().toISOString(),
+            duration
+        }));
+    });
+
+    // --- LIVE USER COUNTER DISPLAY ---
+    function updateLiveUsers() {
+        fetch(LIVE_USERS_URL)
+            .then(r => r.json())
+            .then(data => {
+                const div = document.getElementById('live-users-indicator');
+                if (div) {
+                    div.textContent = `Live users right now: ${data.liveUsers}`;
+                }
+            })
+            .catch(() => {
+                const div = document.getElementById('live-users-indicator');
+                if (div) div.textContent = '';
             });
-        }, 30000);
-
-        // On leave, send duration
-        window.addEventListener('beforeunload', function() {
-            const duration = Math.round((Date.now() - pageEnterTime)/1000);
-            navigator.sendBeacon(ANALYTICS_URL, JSON.stringify({
-                event: 'leave',
-                sessionId: getSessionId(),
-                ts: new Date().toISOString(),
-                duration
-            }));
-        });
-
-        // --- LIVE USER COUNTER DISPLAY ---
-        function updateLiveUsers() {
-            fetch(LIVE_USERS_URL)
-                .then(r => r.json())
-                .then(data => {
-                    const div = document.getElementById('live-users-indicator');
-                    if (div) {
-                        div.textContent = `Live users right now: ${data.liveUsers}`;
-                    }
-                })
-                .catch(() => {
-                    const div = document.getElementById('live-users-indicator');
-                    if (div) div.textContent = '';
-                });
-        }
-        setInterval(updateLiveUsers, 10000);
-        updateLiveUsers();
-    })();
+    }
+    setInterval(updateLiveUsers, 10000);
+    updateLiveUsers();
+});
     </script>
 </body>
 </html>
