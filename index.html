@@ -444,6 +444,24 @@
             .tasks-left-indicator { font-size: 1rem; }
             .well-done-popup { font-size: 1.3rem; padding: 30px 10vw; }
         }
+        .footer-right {
+            position: absolute;
+            right: 16px;
+            top: 24px;
+            color: #0070C9;
+            font-weight: 700;
+            font-size: 15px;
+            text-align: right;
+            min-width: 160px;
+        }
+        @media (max-width: 600px) {
+            .footer-right {
+                position: static;
+                display: block;
+                margin: 10px 0 0 0;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -637,7 +655,8 @@
     <button class="reset-button" onclick="resetTasks()">Reset</button>
     <div class="footer">
         If you encounter any errors or have a <a href="mailto:PSTAC@danskebank.lt?subject=COSMOS%20Checklist%20suggestions">suggestion</a>, reach me via Teams PSTAC<br>
-        Checklist updated on 2025.06.06<br>
+        This site collects only anonymous usage statistics to count visits and improve functionality.<br><br>Checklist updated on 2025.06.25<br>
+        <span class="footer-right" id="live-users-indicator"></span>
     </div>
     <!-- Well Done popup and confetti container -->
     <div class="well-done-popup" id="well-done-popup">🎉 Well Done! 🎉</div>
@@ -657,7 +676,8 @@
             { date: "2025-05-16", text: "Updates: Change Log changed from list to carousel, also whole page updated to look more like Cosmos apps." },
             { date: "2025-05-23", text: "Updates: Added new CLM task with active hyperlink to CLM decision tree." },
             { date: "2025-05-29", text: "Updates: Added new count for unchecked tasks, that helps minimize errors, also added fun stuff." },
-            { date: "2025-06-06", text: "Updates: Added new TRUST screenshot task, also added tax risk sub-task with hyperlink to slides, also fixed Well Done! pop up in dark mode. Edited wording on customer/KINDI CLM marking." }
+            { date: "2025-06-06", text: "Updates: Added new TRUST screenshot task, also added tax risk sub-task with hyperlink to slides, also fixed Well Done! pop up in dark mode. Edited wording on customer/KINDI CLM marking." },
+            { date: "2025-06-25", text: "Updates: Added new live users count, also added backend for pulling basic usage stats, not personal or sensitive data." }
         ];
         let currentChangeLogIndex = changeLogEntries.length - 1;
         function showChangeLogEntry(index) {
@@ -913,7 +933,83 @@
         document.querySelectorAll('input[type="checkbox"].task').forEach(el => {
             el.addEventListener('change', updateTasksLeftIndicator);
         });
+        
+        (function(){
+        // For Codespaces: use 3001, else fallback to localhost:3001
+        const LIVE_API =
+            (window.location.hostname.endsWith('github.dev') || window.location.hostname.endsWith('githubpreview.dev'))
+            ? `https://${window.location.hostname.split('-')[0]}-3001.${window.location.hostname.split('.').slice(1).join('.')}`
+            : 'http://localhost:3001';
 
+        const ANALYTICS_URL = LIVE_API + '/analytics';
+        const LIVE_USERS_URL = LIVE_API + '/live-users';
+
+        function getSessionId() {
+            let sid = sessionStorage.getItem('cosmos_session_id');
+            if (!sid) {
+                sid = Math.random().toString(36).substring(2) + Date.now();
+                sessionStorage.setItem('cosmos_session_id', sid);
+            }
+            return sid;
+        }
+
+        // --- EVENT TRACKING ---
+        const pageEnterTime = Date.now();
+
+        // Send visit event
+        fetch(ANALYTICS_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                event: 'visit',
+                sessionId: getSessionId(),
+                ts: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            })
+        });
+
+        // Heartbeat every 30 seconds to keep session "live"
+        setInterval(() => {
+            fetch(ANALYTICS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    event: 'heartbeat',
+                    sessionId: getSessionId(),
+                    ts: new Date().toISOString()
+                })
+            });
+        }, 30000);
+
+        // On leave, send duration
+        window.addEventListener('beforeunload', function() {
+            const duration = Math.round((Date.now() - pageEnterTime)/1000);
+            navigator.sendBeacon(ANALYTICS_URL, JSON.stringify({
+                event: 'leave',
+                sessionId: getSessionId(),
+                ts: new Date().toISOString(),
+                duration
+            }));
+        });
+
+        // --- LIVE USER COUNTER DISPLAY ---
+        function updateLiveUsers() {
+            fetch(LIVE_USERS_URL)
+                .then(r => r.json())
+                .then(data => {
+                    const div = document.getElementById('live-users-indicator');
+                    if (div) {
+                        div.textContent = `Live users right now: ${data.liveUsers}`;
+                    }
+                })
+                .catch(() => {
+                    const div = document.getElementById('live-users-indicator');
+                    if (div) div.textContent = '';
+                });
+        }
+        setInterval(updateLiveUsers, 10000);
+        updateLiveUsers();
+    })();
     </script>
 </body>
 </html>
