@@ -935,14 +935,11 @@
         });
         
         (function(){
-        // For Codespaces: use 3001, else fallback to localhost:3001
-        const LIVE_API =
-            (window.location.hostname.endsWith('github.dev') || window.location.hostname.endsWith('githubpreview.dev'))
-            ? `https://${window.location.hostname.split('-')[0]}-3001.${window.location.hostname.split('.').slice(1).join('.')}`
-            : 'http://localhost:3001';
+    // Use your Render backend for analytics and live users
+    const LIVE_API = "https://cosmos-checklist.onrender.com/";
 
-        const ANALYTICS_URL = LIVE_API + '/analytics';
-        const LIVE_USERS_URL = LIVE_API + '/live-users';
+    const ANALYTICS_URL = LIVE_API + '/analytics';
+    const LIVE_USERS_URL = LIVE_API + '/live-users';
 
         function getSessionId() {
             let sid = sessionStorage.getItem('cosmos_session_id');
