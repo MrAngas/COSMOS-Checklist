@@ -14,17 +14,19 @@ app.use(express.json());
   For production, use a real database!
 */
 const sessions = {};
-let liveUsers = 0;
 
 // --- Analytics endpoint ---
 app.post('/analytics', (req, res) => {
+  // Defensive: check if req.body is present and is an object
+  if (!req.body || typeof req.body !== 'object') {
+    return res.status(400).json({ error: "Missing or invalid request body" });
+  }
   const { event, sessionId, ts, userAgent, duration } = req.body;
-
-  // Basic analytics logic
-  if (!sessionId) {
-    return res.status(400).json({ error: "sessionId is required" });
+  if (!event || !sessionId) {
+    return res.status(400).json({ error: "Missing event or sessionId" });
   }
 
+  // Basic analytics logic
   if (event === 'visit') {
     // Track new session
     sessions[sessionId] = { lastSeen: Date.now(), userAgent };
@@ -39,6 +41,11 @@ app.post('/analytics', (req, res) => {
   }
 
   res.json({ ok: true });
+});
+
+// Reject GET to /analytics with a 405
+app.get('/analytics', (req, res) => {
+  res.status(405).send('Method Not Allowed');
 });
 
 // --- Live users endpoint ---
